@@ -1,0 +1,643 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CentOS,SSH," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程
+第一步：root用户登录使用root用户登录远程主机（假定IP地址为192.168.1.125）
+1ssh root@192.168.1.125
+这时，会出现警告，提示这是一个新的地址，存在安全风险。接收则输入yes
+
+登录远程主机之后修改root密码
+1passwd
+第二步：新">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CentOS7服务器初步配置">
+<meta property="og:url" content="http://yoursite.com/2016/08/01/CentOS7服务器初步配置/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程
+第一步：root用户登录使用root用户登录远程主机（假定IP地址为192.168.1.125）
+1ssh root@192.168.1.125
+这时，会出现警告，提示这是一个新的地址，存在安全风险。接收则输入yes
+
+登录远程主机之后修改root密码
+1passwd
+第二步：新">
+<meta property="og:image" content="http://yoursite.com/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-30-13.png">
+<meta property="og:image" content="http://yoursite.com/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-54-52.png">
+<meta property="og:image" content="http://yoursite.com/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-58-33.png">
+<meta property="og:image" content="http://yoursite.com/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---11-18-34.png">
+<meta property="og:image" content="http://yoursite.com/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---11-20-02.png">
+<meta property="og:updated_time" content="2016-11-04T16:56:13.413Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CentOS7服务器初步配置">
+<meta name="twitter:description" content="在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程
+第一步：root用户登录使用root用户登录远程主机（假定IP地址为192.168.1.125）
+1ssh root@192.168.1.125
+这时，会出现警告，提示这是一个新的地址，存在安全风险。接收则输入yes
+
+登录远程主机之后修改root密码
+1passwd
+第二步：新">
+<meta name="twitter:image" content="http://yoursite.com/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-30-13.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> CentOS7服务器初步配置 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Hexo</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                CentOS7服务器初步配置
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-01T00:01:31+08:00" content="2016-08-01">
+              2016-08-01
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程</p>
+<h2 id="第一步：root用户登录"><a href="#第一步：root用户登录" class="headerlink" title="第一步：root用户登录"></a>第一步：root用户登录</h2><p>使用root用户登录远程主机（假定IP地址为192.168.1.125）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh root@192.168.1.125</div></pre></td></tr></table></figure>
+<p>这时，会出现警告，提示这是一个新的地址，存在安全风险。接收则输入yes</p>
+<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-30-13.png" alt="-----2016-08-22---10-30-13.png" title="">
+<p>登录远程主机之后修改root密码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">passwd</div></pre></td></tr></table></figure>
+<h2 id="第二步：新建用户"><a href="#第二步：新建用户" class="headerlink" title="第二步：新建用户"></a>第二步：新建用户</h2><p>添加一个用户组admin</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">groupadd admin</div></pre></td></tr></table></figure>
+<p>然后，添加一个新的用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">useradd <span class="_">-d</span> /home/sangjian <span class="_">-s</span> /bin/bash -m sangjian</div></pre></td></tr></table></figure>
+<p>上面命令中，参数d表示指定用户的主目录，参数s指定用户的shell，参数m表示如果该目录不存在，则创建该目录。</p>
+<p>设置新用户的密码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">passwd sangjian</div></pre></td></tr></table></figure>
+<p>将sangjian添加到用户组admin中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">usermod <span class="_">-a</span> -G admin sangjian</div></pre></td></tr></table></figure>
+<p>为sangjian用户设定sudo权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">visudo</div></pre></td></tr></table></figure>
+<p>visudo命令会打开文件/etc/sudoers，找到如下一行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root    ALL=(ALL) ALL</div></pre></td></tr></table></figure>
+<p>添加一行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sangjian    ALL=(ALL) NOPASSWD: ALL</div></pre></td></tr></table></figure>
+<p>上面的NOPASSWD表示，切换sudo的时候，不需要输入密码，我喜欢这样比较省事。如果出于安全考虑，也可以强制要求输入密码。<br>另开一个终端，以sangjian用户登录，检查是否设置成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh sangjian@192.168.1.125</div></pre></td></tr></table></figure>
+<h2 id="第三步：SSH设置"><a href="#第三步：SSH设置" class="headerlink" title="第三步：SSH设置"></a>第三步：SSH设置</h2><p>查看本机是否有SSH公钥（一般是~/.ssh/id_rsa.pub），如果没有则可以使用ssh-keygen命令生成<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen</div></pre></td></tr></table></figure></p>
+<p>想省事的话可以一直按回车即可</p>
+<p>将刚生成的id_rsa.pub文件的内容追加到服务器的authorized_keys文件中<br>可以使用scp命令将生成的id_rsa.pub文件上传到服务器中，再将文件的内容追加到authorized_keys文件中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp ~/.ssh/id_rsa.pub sangjian@192.168.1.125:/home/sangjian/mac_id_rsa.pub</div></pre></td></tr></table></figure></p>
+<p>上面的命令是将本地的公钥上传到服务器中的/home/sangjian目录下的mac_id_rsa.pub文件中</p>
+<p>再执行追加命令（如果~/.ssh目录不存在，则新建）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat mac_id_rsa.pub &gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure></p>
+<p>修改SSH配置文件/etc/ssh/sshd_config<br>在配置文件中找到 <code>#Port 22</code>，修改默认的端口，范围可以从1025到65536<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Port 6983</div></pre></td></tr></table></figure></p>
+<p>修改如下设置并确保去除了#号<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Protocol 2</div><div class="line"><span class="comment">#禁止root用户登录</span></div><div class="line">PermitRootLogin no</div><div class="line"></div><div class="line"><span class="comment">#禁止使用密码登录</span></div><div class="line">PasswordAuthentication no</div><div class="line">PermitEmptyPasswords no</div><div class="line">PasswordAuthentication yes</div></pre></td></tr></table></figure></p>
+<p>最后，在配置文件的末尾添加一行用来指定可以登录的用户<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">AllowUsers sangjian</div></pre></td></tr></table></figure></p>
+<p>保存退出后，修改authorized_keys和.ssh的文件权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo chmod 700 ~/.ssh/</div><div class="line">sudo chmod 600 ~/.ssh/authorized_keys</div></pre></td></tr></table></figure></p>
+<p>确保.ssh的权限为700，authorized_keys的权限为600，否则登录的时候会出现如下错误</p>
+<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-54-52.png" alt="-----2016-08-22---10-54-52.png" title="">
+<p>查看日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tail -n 20 /var/<span class="built_in">log</span>/secure</div></pre></td></tr></table></figure></p>
+<p>可以看到登录时的日志有如下一句</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">localhost sshd[2359]: Authentication refused: bad ownership or modes <span class="keyword">for</span> file /home/sangjian/.ssh/authorized_keys</div></pre></td></tr></table></figure>
+<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-58-33.png" alt="-----2016-08-22---10-58-33.png" title="">
+<p>重启SSHD<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo service sshd restart</div></pre></td></tr></table></figure></p>
+<p>检查是否可以免密码登录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh sangjian@192.168.1.125 -p 6983</div></pre></td></tr></table></figure></p>
+<p>发现不可以，提示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh: connect to host 192.168.1.125 port 6983: Connection refused</div></pre></td></tr></table></figure></p>
+<h2 id="第四步：登录失败问题解决"><a href="#第四步：登录失败问题解决" class="headerlink" title="第四步：登录失败问题解决"></a>第四步：登录失败问题解决</h2><p>出现这一情况主要是防火墙端口开放的问题<br>查看日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tail -n 20 /var/<span class="built_in">log</span>/secure</div></pre></td></tr></table></figure></p>
+<p>发现没有失败的日志输出<br>查看防火墙是否开启<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl status firewalld</div></pre></td></tr></table></figure></p>
+<p>如果开启了，则原因就是刚刚设置的ssh端口6983并没有添加到防火墙中<br>添加端口到防火墙<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo firewall-cmd --zone=public --permanent --add-port=6983/tcp</div></pre></td></tr></table></figure></p>
+<p>重启防火墙<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl restart firewalld</div></pre></td></tr></table></figure></p>
+<p>查看端口是否添加成功</p>
+<p>执行<code>sudo firewall-cmd --list-all</code>，如果出现以下输出，则证明添加成功</p>
+<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---11-18-34.png" alt="-----2016-08-22---11-18-34.png" title="">
+<h2 id="第五步-登录服务器"><a href="#第五步-登录服务器" class="headerlink" title="第五步 登录服务器"></a>第五步 登录服务器</h2><p>SSH的配置已经完成了，下面测试以下是否可以登录</p>
+<p>输入<code>ssh sangjian@192.168.1.125 -p 6983</code>，提示</p>
+<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---11-20-02.png" alt="-----2016-08-22---11-20-02.png" title="">
+<p>表示已经登录成功了，至此基于Centos7的服务器初步配置已经完成了。</p>
+<p>本文主要介绍了SSH配置，剩下的可以根据需要配置一些安全相关的设置，比如防火墙的设置，端口的限制等等。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CentOS/" rel="tag">#CentOS</a>
+          
+            <a href="/tags/SSH/" rel="tag">#SSH</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/26/Linux-Centos7设置nginx开机自启动/" rel="prev" title="Linux/Centos7设置nginx开机自启动">
+                Linux/Centos7设置nginx开机自启动 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Sangjian" />
+          <p class="site-author-name" itemprop="name">Sangjian</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一步：root用户登录"><span class="nav-number">1.</span> <span class="nav-text">第一步：root用户登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二步：新建用户"><span class="nav-number">2.</span> <span class="nav-text">第二步：新建用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三步：SSH设置"><span class="nav-number">3.</span> <span class="nav-text">第三步：SSH设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四步：登录失败问题解决"><span class="nav-number">4.</span> <span class="nav-text">第四步：登录失败问题解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五步-登录服务器"><span class="nav-number">5.</span> <span class="nav-text">第五步 登录服务器</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sangjian</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
