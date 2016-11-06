@@ -273,9 +273,9 @@ mathjax:
 # you can visit http://dev.duoshuo.com get duoshuo user id.
 duoshuo_info:
   ua_enable: true
-  admin_enable: false
-  user_id: 0
-  #admin_nickname: Author
+  admin_enable: true
+  user_id: 6319057304863901000
+  admin_nickname: 博主
 
 
 # Facebook SDK Support.
@@ -382,3 +382,5 @@ images: images
 
 # Theme version
 version: 5.0.1
+
+duoshuo_hotartical: true

@@ -17,6 +17,8 @@ Starting MySQL..................................... ERROR! The server quit witho
 ```
 查看mysql配置文件`/etc/my.cnf`，查看错误日志文件，是内存太小了的原因。
 
+<!-- more -->
+
 调整my.cnf 参数,重新配置即可
 
 ```

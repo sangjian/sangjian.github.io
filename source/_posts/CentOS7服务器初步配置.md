@@ -4,7 +4,8 @@ date: 2016-08-01 00:01:31
 tags:
 - CentOS
 - SSH
-highlight_theme: night
+categories: 
+- Linux
 ---
 在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程
 
