@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="Idea Buffer">
 <meta property="og:description" content="Apache Tomcat 版本介绍Tomcat是一个开源的软件，其实现了Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 技术。Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 规范是在 Java">
 <meta property="og:image" content="http://www.ideabuffer.cn/2016/09/01/Tomcat-8-介绍/QQ20160901-0-2x.png">
-<meta property="og:updated_time" content="2016-11-04T16:56:13.480Z">
+<meta property="og:updated_time" content="2016-11-12T09:00:25.089Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tomcat 8 介绍">
 <meta name="twitter:description" content="Apache Tomcat 版本介绍Tomcat是一个开源的软件，其实现了Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 技术。Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 规范是在 Java">
@@ -320,17 +320,20 @@
 </li>
 <li><p>新增了支持并行加载的web应用程序的类加载器<code>ParallelWebappClassLoader</code>的实现。</p>
 </li>
-<li><p><del>实验支持SPDY[^1]</del>。</p>
+<li><p><del>实验支持[SPDY] [1]</del>。</p>
 </li>
 <li><p>连接器默认使用无阻塞I/O。现在HTTP和AJP的连接器默认的都是无阻塞的I/O。</p>
 </li>
 <li><p>修改了连接器的默认URIEncoding，将之前的ISO-8859-1修改为UTF-8。</p>
 </li>
 </ul>
+<blockquote>
+<p><em>SPDY协议是Google提出的基于传输控制协议(TCP)的应用层协议，通过压缩、多路复用和优先级来缩短加载时间。该协议是一种更加快速的内容传输协议。该功能在 Tomcat 8.0.22 版本被删除</em></p>
+</blockquote>
 <p>参考：<a href="http://tomcat.apache.org/tomcat-8.0-doc/changelog.html" target="_blank" rel="external">Tomcat 8.0.x Changelog</a></p>
 <h2 id="Tomcat-8-5-x-版本"><a href="#Tomcat-8-5-x-版本" class="headerlink" title="Tomcat 8.5.x 版本"></a>Tomcat 8.5.x 版本</h2><p>Tomcat 8.5.4于2016年7月12日发布，这个版本的分支来自Tomcat9.0.0.M4。主要的目的是恢复Java 7的兼容性，并支持Servlet3.1，JSP2.3，EL3.0，WebSocket1.1以及1.1 JASPIC规范。</p>
 <blockquote>
-<p>The Tomcat 8.5.x branch was created from the Tomcat 9.0.0.M4 tag. Changes were applied to restore Java 7 compatibility and to align the specification APIs with Servlet 3.1, JSP 2.3, EL 3.0, WebSocket 1.1 and JASPIC 1.1.[^2]</p>
+<p><em>The Tomcat 8.5.x branch was created from the Tomcat 9.0.0.M4 tag. Changes were applied to restore Java 7 compatibility and to align the specification APIs with Servlet 3.1, JSP 2.3, EL 3.0, WebSocket 1.1 and JASPIC 1.1.</em></p>
 </blockquote>
 <p>该系列版本的主要新特性有：</p>
 <ul>
@@ -345,7 +348,6 @@
 </ul>
 <p>参考：<a href="http://tomcat.apache.org/tomcat-8.5-doc/changelog.html" target="_blank" rel="external">Tomcat 8.5.x Changelog</a></p>
 <hr>
-<p><a href="http://tomcat.apache.org/tomcat-8.5-doc/changelog.html" target="_blank" rel="external">^n</a>: SPDY协议是Google提出的基于传输控制协议(TCP)的应用层协议，通过压缩、多路复用和优先级来缩短加载时间。该协议是一种更加快速的内容传输协议。该功能在 Tomcat 8.0.22 版本被删除</p>
 
       
     </div>
@@ -467,7 +469,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -475,7 +477,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -484,7 +486,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
