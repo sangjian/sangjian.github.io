@@ -1,0 +1,861 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Idea Buffer" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="一般情况下，Linux默认的最大文件描述符数量是1024，对于一般的程序来说1024应该是足够使用的（Nginx、系统进程等）。但是像mysql、java等单进程处理大量请求的应用来说就未必了。如果单个进程打开的文件描述符数量超过了系统定义的值，就会提到“too many files open”的错误提示。
+如果想查看当前进程打开了多少个文件，可以执行如下命令查看：
+lsof -n | awk &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux配置调优：最大打开文件描述符个数">
+<meta property="og:url" content="http://www.ideabuffer.cn/2016/11/20/Linux配置调优：最大打开文件描述符个数/index.html">
+<meta property="og:site_name" content="Idea Buffer">
+<meta property="og:description" content="一般情况下，Linux默认的最大文件描述符数量是1024，对于一般的程序来说1024应该是足够使用的（Nginx、系统进程等）。但是像mysql、java等单进程处理大量请求的应用来说就未必了。如果单个进程打开的文件描述符数量超过了系统定义的值，就会提到“too many files open”的错误提示。
+如果想查看当前进程打开了多少个文件，可以执行如下命令查看：
+lsof -n | awk &amp;">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/11/20/Linux配置调优：最大打开文件描述符个数/2016-11-20%201.18.23.png">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/11/20/Linux配置调优：最大打开文件描述符个数/2016-11-20%2012.50.44.png">
+<meta property="og:updated_time" content="2016-11-19T17:27:25.128Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux配置调优：最大打开文件描述符个数">
+<meta name="twitter:description" content="一般情况下，Linux默认的最大文件描述符数量是1024，对于一般的程序来说1024应该是足够使用的（Nginx、系统进程等）。但是像mysql、java等单进程处理大量请求的应用来说就未必了。如果单个进程打开的文件描述符数量超过了系统定义的值，就会提到“too many files open”的错误提示。
+如果想查看当前进程打开了多少个文件，可以执行如下命令查看：
+lsof -n | awk &amp;">
+<meta name="twitter:image" content="http://www.ideabuffer.cn/2016/11/20/Linux配置调优：最大打开文件描述符个数/2016-11-20%201.18.23.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6319057304863901000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Linux配置调优：最大打开文件描述符个数 | Idea Buffer </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9ad13c2f9edb81550c28aff1e84a4e06";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Idea Buffer</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">桑健的博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux配置调优：最大打开文件描述符个数
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-20T01:26:38+08:00" content="2016-11-20">
+              2016-11-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/20/Linux配置调优：最大打开文件描述符个数/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/20/Linux配置调优：最大打开文件描述符个数/" class="leancloud_visitors" data-flag-title="Linux配置调优：最大打开文件描述符个数">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>2,486 字</span>
+                &nbsp; | &nbsp;
+                <span>9 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一般情况下，Linux默认的最大文件描述符数量是1024，对于一般的程序来说1024应该是足够使用的（Nginx、系统进程等）。但是像mysql、java等单进程处理大量请求的应用来说就未必了。如果单个进程打开的文件描述符数量超过了系统定义的值，就会提到“too many files open”的错误提示。</p>
+<p>如果想查看当前进程打开了多少个文件，可以执行如下命令查看：</p>
+<p><code>lsof -n | awk &#39;{print $2}&#39; | sort | uniq -c | sort -nr | more</code></p>
+<p>执行后可以看到，第一列是打开的文件描述符数量，第二列是进程id。</p>
+<h2 id="限制级别"><a href="#限制级别" class="headerlink" title="限制级别"></a>限制级别</h2><p>最大文件描述符数的限制可以分为3种：</p>
+<ul>
+<li>shell级别的限制</li>
+<li>用户级别的限制</li>
+<li>系统级别的限制</li>
+</ul>
+<a id="more"></a>
+<h3 id="shell级别的限制"><a href="#shell级别的限制" class="headerlink" title="shell级别的限制"></a>shell级别的限制</h3><p>如果在shell中执行<code>ulimit -n 4096</code>后，表示将当前用户所有进程能打开的最大文件数量设置为4096.但只是在当前shell中有效，退出后再登录则又恢复成之前的限制。</p>
+<h3 id="用户级别的限制"><a href="#用户级别的限制" class="headerlink" title="用户级别的限制"></a>用户级别的限制</h3><p>用户级别的限制是针对具体的用户，一个用户可以通过多个shell打开，这里不针对每一个shell限制。</p>
+<h3 id="系统级别的限制"><a href="#系统级别的限制" class="headerlink" title="系统级别的限制"></a>系统级别的限制</h3><p>这一级别的限制是对整个系统的所有用户的限制，可以执行<code>cat /proc/sys/fs/file-max</code>来查看。</p>
+<h2 id="ulimit命令"><a href="#ulimit命令" class="headerlink" title="ulimit命令"></a>ulimit命令</h2><h3 id="ulimit功能介绍"><a href="#ulimit功能介绍" class="headerlink" title="ulimit功能介绍"></a>ulimit功能介绍</h3><p>考虑一下如下情况：</p>
+<p>一台Linux主机上同时通过ssh登录了20个人，如果在系统资源无限制的情况下，这20个人同时打开了100个文档，并且每个文档的大小大概有20M，这时系统的内存资源就会力不从心了。</p>
+<p>ulimit用于限制shell启动进程所占用的资源，支持以下各种类型的限制：所创建的内核文件的大小、进程数据块的大小、shell进程创建文件的大小、内存锁住的大小、常驻内存集的大小、打开文件描述符的数量、分配堆栈的最大大小、CPU时间、单个用户的最大线程数、shell进程所能使用的最大虚拟内存。同时，它支持对资源的硬限制和软限制。</p>
+<p>ulimit可以作用于用户登录的当前shell会话，是一种临时限制。在会话终止时便结束限制，在shell中执行该命令不会影响其他shell会话。</p>
+<p>如果想要使限制永久生效，则需要设置<code>/etc/security/limits.conf</code>文件，这个文件稍后会讲到。</p>
+<h3 id="ulimit的使用说明"><a href="#ulimit的使用说明" class="headerlink" title="ulimit的使用说明"></a>ulimit的使用说明</h3><p>执行<code>help ulimit</code>命令可以查看一下该命令的使用说明：</p>
+<img src="/2016/11/20/Linux配置调优：最大打开文件描述符个数/2016-11-20%201.18.23.png" alt="2016-11-20 1.18.23.png" title="">
+<h3 id="ulimit限制最大打开文件描述符个数"><a href="#ulimit限制最大打开文件描述符个数" class="headerlink" title="ulimit限制最大打开文件描述符个数"></a>ulimit限制最大打开文件描述符个数</h3><p>由上可知，如果要限制最大打开文件描述符的个数可以执行以下命令：</p>
+<p><code>ulimit -n 1000</code></p>
+<p>该命令表示将最大打开文件描述符的个数限制为1000（只在当前shell中有效）。</p>
+<p>这里需要注意的地方是，linux资源限制的方式可分为<em>软限制</em>和<em>硬限制</em>。</p>
+<p>从<code>ulimit</code>的使用说明来看，<code>ulimit</code>的参数已经包含了软限制和硬限制，<code>-H</code>代表硬限制，<code>-S</code>代表软限制。</p>
+<p>例如，执行<code>ulimit -Hn 1000</code>表示将硬限制设置为1000，同样<code>ulimit -Sn 1000</code>表示将软限制设置为1000，如果不指定<code>-H</code>或是<code>-S</code>，则相当于把软限制和硬限制都设置为1000。</p>
+<p>它们之间的关系是：</p>
+<ul>
+<li>软限制起实际限制作用，但不能超过硬限制（除非有root权限）。</li>
+<li>普通用户可以在硬限制范围内，更改自己的软限制</li>
+<li>普通用户都可以缩小硬限制,但不能扩大硬限制，而root缩小扩大都可以。</li>
+</ul>
+<p>下面通过几个例子来说明<code>ulimit</code>命令的使用。</p>
+<h3 id="ulimit-n的使用"><a href="#ulimit-n的使用" class="headerlink" title="ulimit -n的使用"></a><code>ulimit -n</code>的使用</h3><p>如果你没有配置过，则默认的限制为1024</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ulimit -n</div><div class="line">1024</div></pre></td></tr></table></figure>
+<p>将限制设置为2048</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ulimit -n 2048</div></pre></td></tr></table></figure>
+<p>查看软限制和硬限制</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ulimit -Sn</div><div class="line">2048</div><div class="line">[root@localhost ~]# ulimit -Hn</div><div class="line">2048</div></pre></td></tr></table></figure>
+<p>对于root用户，可以将增加硬限制</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ulimit -n 2049</div><div class="line">[root@localhost ~]#</div></pre></td></tr></table></figure>
+<p>对于普通用户，通过<code>ulimit -n</code>来查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[sangjian@localhost ~]$ ulimit -n</div><div class="line">1024</div></pre></td></tr></table></figure>
+<p>将限制改为1023，执行成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[sangjian@localhost ~]$ ulimit -n 1023</div><div class="line">[sangjian@localhost ~]$</div></pre></td></tr></table></figure>
+<p>将限制改为1025，执行失败</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[sangjian@localhost ~]$ ulimit -n 1025</div><div class="line">-bash: ulimit: open files: 无法修改 limit 值: 不允许的操作</div></pre></td></tr></table></figure>
+<p>可见，普通用户只能缩小限制，而不能扩大限制。</p>
+<p>刚才说到执行<code>ulimit -n</code>是同时对软限制和硬限制都生效的，现在将软限制改为1000，执行成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[sangjian@localhost ~]$ ulimit -Sn 1000</div><div class="line">[sangjian@localhost ~]$</div></pre></td></tr></table></figure>
+<p>将软限制改为1024，执行失败，因为硬限制的值为1023</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[sangjian@localhost ~]$ ulimit -Sn 1024</div><div class="line">-bash: ulimit: open files: 无法修改 limit 值: 无效的参数</div></pre></td></tr></table></figure>
+<h2 id="修改最大文件限制数量的方式"><a href="#修改最大文件限制数量的方式" class="headerlink" title="修改最大文件限制数量的方式"></a>修改最大文件限制数量的方式</h2><ul>
+<li>通过<code>ulimit -n</code>修改</li>
+<li>通过<code>/etc/security/limits.conf</code>文件来修改</li>
+<li>通过<code>/proc/sys/fs/file-max</code>文件来修改</li>
+</ul>
+<h2 id="etc-security-limits-conf"><a href="#etc-security-limits-conf" class="headerlink" title="/etc/security/limits.conf"></a>/etc/security/limits.conf</h2><p>limits.conf文件实际是Linux PAM（插入式认证模块，Pluggable Authentication Modules）中 pam_limits.so 的配置文件，突破系统的默认限制，对系统访问资源有一定保护作用。 limits.conf 和sysctl.conf区别在于limits.conf是针对用户，而sysctl.conf是针对整个系统参数配置。</p>
+<p>limits.conf的格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">username|@groupname type resource limit</div></pre></td></tr></table></figure>
+<p><em>username|@groupname</em>：设置需要被限制的用户名，组名前面加@和用户名区别。也可以用通配符*来做所有用户的限制。</p>
+<p><em>type</em>：有 soft，hard 和 -，soft 指的是当前系统生效的设置值。hard 表明系统中所能设定的最大值。soft 的限制不能比har 限制高。用 - 就表明同时设置了 soft 和 hard 的值。</p>
+<p><em>resource</em>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">　　core			- 限制内核文件的大小</div><div class="line">　　date 			- 最大数据大小</div><div class="line">　　fsize 		- 最大文件大小</div><div class="line">　　memlock 		- 最大锁定内存地址空间</div><div class="line">　　nofile 		- 打开文件的最大数目</div><div class="line">　　rss 			- 最大持久设置大小</div><div class="line">　　stack 		- 最大栈大小</div><div class="line">　　cpu 			- 以分钟为单位的最多 CPU 时间</div><div class="line">　　noproc 		- 进程的最大数目</div><div class="line">　　as 			- 地址空间限制</div><div class="line">　　maxlogins 	- 此用户允许登录的最大数目</div><div class="line">　　maxsyslogins	- 系统所有登录的最大数量</div></pre></td></tr></table></figure>
+<p>例如，如果想把最大文件描述符数设置为4096，且对所有用户生效，则在该文件中添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">* soft nofile 4096</div><div class="line">* hard nofile 4096</div></pre></td></tr></table></figure>
+<h2 id="proc-sys-fs-file-max"><a href="#proc-sys-fs-file-max" class="headerlink" title="/proc/sys/fs/file-max"></a>/proc/sys/fs/file-max</h2><p>该文件是系统级别的限制，可以查看该文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# cat /proc/sys/fs/file-max</div><div class="line">185983</div></pre></td></tr></table></figure>
+<p>可以看到，系统级别的最大文件描述符数是185983，该限制是对整个系统的所有用户生效。但是不是就不可以设置更大的限制数量呢？答案是否定的。对于root来说，可以设置大于这个数量的限制，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ulimit -n 185984</div><div class="line">[root@localhost ~]#</div></pre></td></tr></table></figure>
+<p>发现执行成功了，说明root是可以修改为更大的限制数量的。</p>
+<p>其实，/proc/sys/fs/file-max是系统给出的建议值，系统会计算资源给出一个和合理值，一般跟内存有关系，内存越大，改值越大，但是仅仅是一个建议值，limits.conf的设定完全可以超过/proc/sys/fs/file-max。通过limits.conf文件来配置也是可以的。</p>
+<h2 id="需要注意的地方"><a href="#需要注意的地方" class="headerlink" title="需要注意的地方"></a>需要注意的地方</h2><h3 id="ulimit-n设置的是当前用户单个进程能够打开的文件描述符个数还是所有进程的文件描述符个数？"><a href="#ulimit-n设置的是当前用户单个进程能够打开的文件描述符个数还是所有进程的文件描述符个数？" class="headerlink" title="ulimit -n设置的是当前用户单个进程能够打开的文件描述符个数还是所有进程的文件描述符个数？"></a><code>ulimit -n</code>设置的是当前用户单个进程能够打开的文件描述符个数还是所有进程的文件描述符个数？</h3><p>对于第一点，网上这两种说法都有，具体我也做了一些试验，例如，当用<code>vim</code>查看一个文件时，通过另一个shell登录后，查看vim进程的pid：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[sangjian@localhost ~]$ ps -ef | grep vim</div><div class="line">sangjian  6099  6036  0 23:39 pts/0    00:00:00 vim test.sh</div><div class="line">sangjian  6101  5986  0 23:39 pts/3    00:00:00 grep --color=auto vim</div></pre></td></tr></table></figure>
+<p>可知，pid是6099，查看<code>/proc/6099/fd</code>中的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[sangjian@localhost ~]$ ll /proc/6099/fd</div><div class="line">总用量 0</div><div class="line">lrwx------. 1 sangjian sangjian 64 11月 19 23:41 0 -&gt; /dev/pts/0</div><div class="line">lrwx------. 1 sangjian sangjian 64 11月 19 23:41 1 -&gt; /dev/pts/0</div><div class="line">lrwx------. 1 sangjian sangjian 64 11月 19 23:39 2 -&gt; /dev/pts/0</div><div class="line">lrwx------. 1 sangjian sangjian 64 11月 19 23:41 4 -&gt; /home/sangjian/.test.sh.swp</div></pre></td></tr></table></figure>
+<p>每个进程的信息都会在/proc目录中保存，fd目录为打开的文件描述符，可以看到当前打开了4个文件描述符。</p>
+<p>修改<code>/etc/security/limits.conf</code>文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sangjian soft nofile 20</div><div class="line">sangjian hard nofile 20</div></pre></td></tr></table></figure>
+<p>将<code>sangjian</code>这个用户的最大打开文件描述符个数设置为20，因为设置太小的话shell登录都不成功。然后新开了6个shell以<code>sangjian</code>这个用户来登录，并且每个都用<code>vim</code>打开一个文件，结果是都可以打开，这也就是说使用<code>ulimit -n</code>限制的是每个进程最大打开文件描述符的数量。</p>
+<h3 id="lsof-p-pid查看的结果是否都是该进程打开的文件描述符？"><a href="#lsof-p-pid查看的结果是否都是该进程打开的文件描述符？" class="headerlink" title="lsof -p pid查看的结果是否都是该进程打开的文件描述符？"></a><code>lsof -p pid</code>查看的结果是否都是该进程打开的文件描述符？</h3><p>不都是。</p>
+<p><code>lsof</code>命令列出的是一个进程及其子进程与哪些文件有关联。</p>
+<p><em>请注意</em>：关联文件和打开文件描述符是不同的，关联文件的数量可能远远大于打开的文件描述符的数量。</p>
+<p>比如刚刚查看的vim命令执行后，在<code>/proc</code>目录下查看了打开的文件描述符是4个，那么我们再通过<code>lsof</code>来看一下：</p>
+<img src="/2016/11/20/Linux配置调优：最大打开文件描述符个数/2016-11-20%2012.50.44.png" alt="2016-11-20 12.50.44.png" title="">
+<p>可以看到，这个数量已经远远大于4了，这是为什么呢？</p>
+<p>google找了一些资料，大概原因是<code>lsof</code>会列出系统中所占用的资源,但是这些资源不一定会占用打开的文件描述符(比如共享内存,信号量,消息队列,内存映射等，虽然占用了这些资源但不占用打开文件号)，因此有可能出现<code>cat /proc/sys/fs/file-max</code>的值小于<code>lsof | wc -l</code>。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/12/Nginx配置：虚拟主机（1）/" rel="next" title="Nginx配置：虚拟主机（1）">
+                <i class="fa fa-chevron-left"></i> Nginx配置：虚拟主机（1）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/20/Linux配置调优：最大打开文件描述符个数/"
+           data-title="Linux配置调优：最大打开文件描述符个数" data-url="http://www.ideabuffer.cn/2016/11/20/Linux配置调优：最大打开文件描述符个数/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Neo" />
+          <p class="site-author-name" itemprop="name">Neo</p>
+          <p class="site-description motion-element" itemprop="description">More Articles,More Ideas</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#限制级别"><span class="nav-number">1.</span> <span class="nav-text">限制级别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell级别的限制"><span class="nav-number">1.1.</span> <span class="nav-text">shell级别的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户级别的限制"><span class="nav-number">1.2.</span> <span class="nav-text">用户级别的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统级别的限制"><span class="nav-number">1.3.</span> <span class="nav-text">系统级别的限制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ulimit命令"><span class="nav-number">2.</span> <span class="nav-text">ulimit命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ulimit功能介绍"><span class="nav-number">2.1.</span> <span class="nav-text">ulimit功能介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ulimit的使用说明"><span class="nav-number">2.2.</span> <span class="nav-text">ulimit的使用说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ulimit限制最大打开文件描述符个数"><span class="nav-number">2.3.</span> <span class="nav-text">ulimit限制最大打开文件描述符个数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ulimit-n的使用"><span class="nav-number">2.4.</span> <span class="nav-text">ulimit -n的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改最大文件限制数量的方式"><span class="nav-number">3.</span> <span class="nav-text">修改最大文件限制数量的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#etc-security-limits-conf"><span class="nav-number">4.</span> <span class="nav-text">/etc/security/limits.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proc-sys-fs-file-max"><span class="nav-number">5.</span> <span class="nav-text">/proc/sys/fs/file-max</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#需要注意的地方"><span class="nav-number">6.</span> <span class="nav-text">需要注意的地方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ulimit-n设置的是当前用户单个进程能够打开的文件描述符个数还是所有进程的文件描述符个数？"><span class="nav-number">6.1.</span> <span class="nav-text">ulimit -n设置的是当前用户单个进程能够打开的文件描述符个数还是所有进程的文件描述符个数？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsof-p-pid查看的结果是否都是该进程打开的文件描述符？"><span class="nav-number">6.2.</span> <span class="nav-text">lsof -p pid查看的结果是否都是该进程打开的文件描述符？</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Neo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sangjian"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="//cdn.bootcss.com/UAParser.js/0.7.9/ua-parser.min.js"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("mI3fROQj8loMvwBe0hQWTgLD-gzGzoHsz", "MyNIlLz7uUKSexkXWgeWFVKp");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

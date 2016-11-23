@@ -78,6 +78,8 @@
 
 
 
+  <link rel="alternate" href="/atom.xml" title="Idea Buffer" type="application/atom+xml" />
+
 
 
 
@@ -257,8 +259,156 @@
             
               
                 
-                <a class="post-title-link" href="/2016/11/12/Nginx配置：虚拟主机/" itemprop="url">
-                  Nginx配置：虚拟主机
+                <a class="post-title-link" href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/" itemprop="url">
+                  Linux配置调优：最大打开文件描述符个数
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-20T01:26:38+08:00" content="2016-11-20">
+              2016-11-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/20/Linux配置调优：最大打开文件描述符个数/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/20/Linux配置调优：最大打开文件描述符个数/" class="leancloud_visitors" data-flag-title="Linux配置调优：最大打开文件描述符个数">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>2,486 字</span>
+                &nbsp; | &nbsp;
+                <span>9 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>一般情况下，Linux默认的最大文件描述符数量是1024，对于一般的程序来说1024应该是足够使用的（Nginx、系统进程等）。但是像mysql、java等单进程处理大量请求的应用来说就未必了。如果单个进程打开的文件描述符数量超过了系统定义的值，就会提到“too many files open”的错误提示。</p>
+<p>如果想查看当前进程打开了多少个文件，可以执行如下命令查看：</p>
+<p><code>lsof -n | awk &#39;{print $2}&#39; | sort | uniq -c | sort -nr | more</code></p>
+<p>执行后可以看到，第一列是打开的文件描述符数量，第二列是进程id。</p>
+<h2 id="限制级别"><a href="#限制级别" class="headerlink" title="限制级别"></a>限制级别</h2><p>最大文件描述符数的限制可以分为3种：</p>
+<ul>
+<li>shell级别的限制</li>
+<li>用户级别的限制</li>
+<li>系统级别的限制</li>
+</ul>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/11/12/Nginx配置：虚拟主机（1）/" itemprop="url">
+                  Nginx配置：虚拟主机（1）
                 </a>
               
             
@@ -301,8 +451,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/11/12/Nginx配置：虚拟主机/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/12/Nginx配置：虚拟主机/" itemprop="commentsCount"></span>
+                <a href="/2016/11/12/Nginx配置：虚拟主机（1）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/12/Nginx配置：虚拟主机（1）/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -312,7 +462,24 @@
 
           
           
+             <span id="/2016/11/12/Nginx配置：虚拟主机（1）/" class="leancloud_visitors" data-flag-title="Nginx配置：虚拟主机（1）">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
 
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>853 字</span>
+                &nbsp; | &nbsp;
+                <span>3 min</span>
+              </span>
           
         </div>
       </header>
@@ -335,7 +502,7 @@
 <li>基于IP的虚拟主机，通过IP地址来区分虚拟主机</li>
 </ul>
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/12/Nginx配置：虚拟主机/#more" rel="contents">
+            <a class="btn" href="/2016/11/12/Nginx配置：虚拟主机（1）/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -422,7 +589,24 @@
 
           
           
+             <span id="/2016/10/27/解决mysql5-6占用内存过大/" class="leancloud_visitors" data-flag-title="解决mysql5.6占用内存过大">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
 
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>4,339 字</span>
+                &nbsp; | &nbsp;
+                <span>16 min</span>
+              </span>
           
         </div>
       </header>
@@ -528,7 +712,24 @@
 
           
           
+             <span id="/2016/09/01/Tomcat-8-介绍/" class="leancloud_visitors" data-flag-title="Tomcat 8 介绍">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
 
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>931 字</span>
+                &nbsp; | &nbsp;
+                <span>4 min</span>
+              </span>
           
         </div>
       </header>
@@ -542,53 +743,18 @@
 
       
         
-          
-            <h2 id="Apache-Tomcat-版本介绍"><a href="#Apache-Tomcat-版本介绍" class="headerlink" title="Apache Tomcat 版本介绍"></a>Apache Tomcat 版本介绍</h2><p>Tomcat是一个开源的软件，其实现了Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 技术。Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 规范是在 <a href="http://www.jcp.org" target="_blank" rel="external">Java Community Process</a> 下开发出来的。</p>
+          <h2 id="Apache-Tomcat-版本介绍"><a href="#Apache-Tomcat-版本介绍" class="headerlink" title="Apache Tomcat 版本介绍"></a>Apache Tomcat 版本介绍</h2><p>Tomcat是一个开源的软件，其实现了Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 技术。Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 规范是在 <a href="http://www.jcp.org">Java Community Process</a> 下开发出来的。</p>
 <p>不同版本的Apache Tomcat实现了不同版本的Servlet和JSP规范。它们之间的对应关系如下：</p>
 <img src="/2016/09/01/Tomcat-8-介绍/QQ20160901-0-2x.png" alt="QQ20160901-0-2x.png" title="">
 <p>当选举一个发布版本时，如果审阅者认为次发布版本已经达到稳定水平，则会选取此版本为稳定版。新的主要版本最初的发布通常从Alpha版本开始,然后经历beta版，最后到稳定版，这通常要经历几个月的时间。不过，稳定版的条件是Java规范的实现都已经完成。也就是说，在所有其他方面被认为是稳定的，但如果规范的实现不是最终的，可能仍然被标记为Beta版。</p>
 <p><strong>Alpha</strong>  由于规范的要求和/或一些显著的bug的原因，可能含有大量的未经测试或者缺少的功能，并且预计不会在任何时间内稳定地运行。</p>
 <p><strong>Beta</strong> 可能含有一些未经测试的功能和/或一些相对较小的错误。Beta版预计不会稳定地运行。</p>
 <p><strong>Stable</strong> 可能包含少量相对较小的错误。稳定版本可以用于进行生产环境使用，预计可以长时间稳定地运行。</p>
-<p>参考：<a href="http://tomcat.apache.org/whichversion.html" target="_blank" rel="external">Apache Tomcat Versions</a></p>
-<h2 id="Tomcat-8-0-x-版本"><a href="#Tomcat-8-0-x-版本" class="headerlink" title="Tomcat 8.0.x 版本"></a>Tomcat 8.0.x 版本</h2><p>Tomcat 8.0.x最新的版本是Tomcat 8.0.36。该系列同样实现了 Servlet 3.1, JSP 2.3, EL 3.0 and Web Socket 1.0 规范。该系列版本的新特性有：</p>
-<ul>
-<li><p>对资源进行了重构，合并了Aliases，VirtualLoader，VirtualDirContext，JAR资源和外部仓库，现在都以单个的、一致的方法进行配置。</p>
-</li>
-<li><p>新增了当Tomcat未运行时对war包修改的检测。Tomcat会在解压后的目录中创建一个META-INF/war-tracker文件，设置该文件的最后修改时间为war包的最后修改时间。如果Tomcat通过这种机制检测到修改过的war包则会重新部署该web应用（也就是说之前的解压目录会被删除，修改过的war包会重新解压到当前目录）。</p>
-</li>
-<li><p>新增了支持并行加载的web应用程序的类加载器<code>ParallelWebappClassLoader</code>的实现。</p>
-</li>
-<li><p><del>实验支持[SPDY] [1]</del>。</p>
-</li>
-<li><p>连接器默认使用无阻塞I/O。现在HTTP和AJP的连接器默认的都是无阻塞的I/O。</p>
-</li>
-<li><p>修改了连接器的默认URIEncoding，将之前的ISO-8859-1修改为UTF-8。</p>
-</li>
-</ul>
-<blockquote>
-<p><em>SPDY协议是Google提出的基于传输控制协议(TCP)的应用层协议，通过压缩、多路复用和优先级来缩短加载时间。该协议是一种更加快速的内容传输协议。该功能在 Tomcat 8.0.22 版本被删除</em></p>
-</blockquote>
-<p>参考：<a href="http://tomcat.apache.org/tomcat-8.0-doc/changelog.html" target="_blank" rel="external">Tomcat 8.0.x Changelog</a></p>
-<h2 id="Tomcat-8-5-x-版本"><a href="#Tomcat-8-5-x-版本" class="headerlink" title="Tomcat 8.5.x 版本"></a>Tomcat 8.5.x 版本</h2><p>Tomcat 8.5.4于2016年7月12日发布，这个版本的分支来自Tomcat9.0.0.M4。主要的目的是恢复Java 7的兼容性，并支持Servlet3.1，JSP2.3，EL3.0，WebSocket1.1以及1.1 JASPIC规范。</p>
-<blockquote>
-<p><em>The Tomcat 8.5.x branch was created from the Tomcat 9.0.0.M4 tag. Changes were applied to restore Java 7 compatibility and to align the specification APIs with Servlet 3.1, JSP 2.3, EL 3.0, WebSocket 1.1 and JASPIC 1.1.</em></p>
-</blockquote>
-<p>该系列版本的主要新特性有：</p>
-<ul>
-<li><p>新增了 <code>org.apache.catalina.servlet4preview</code> 包，作用是可以尽早地获取Servlet 4.0 的新特性（需要注意的是，这个包Tomcat 9.x将不会出现）。</p>
-</li>
-<li><p>新增了对 JASPIC (JSR-196) 的支持。</p>
-</li>
-<li><p>新增了对 HTTP/2 支持。</p>
-</li>
-<li><p>新增了动态添加 TLS 虚拟主机的功能。</p>
-</li>
-</ul>
-<p>参考：<a href="http://tomcat.apache.org/tomcat-8.5-doc/changelog.html" target="_blank" rel="external">Tomcat 8.5.x Changelog</a></p>
-<hr>
-
-          
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/09/01/Tomcat-8-介绍/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -656,6 +822,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -672,7 +857,24 @@
 
           
           
+             <span id="/2016/08/26/Linux-Centos7设置nginx开机自启动/" class="leancloud_visitors" data-flag-title="Linux/Centos7设置nginx开机自启动">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
 
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>185 字</span>
+                &nbsp; | &nbsp;
+                <span>1 min</span>
+              </span>
           
         </div>
       </header>
@@ -686,15 +888,12 @@
 
       
         
-          
-            <h2 id="新增shell脚本-vi-etc-rc-d-init-d-nginx"><a href="#新增shell脚本-vi-etc-rc-d-init-d-nginx" class="headerlink" title="新增shell脚本 vi /etc/rc.d/init.d/nginx"></a>新增shell脚本 vi /etc/rc.d/init.d/nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#! /bin/bash</span></div><div class="line"><span class="comment"># chkconfig: 35 85 15  </span></div><div class="line"><span class="comment"># description: Nginx is an HTTP(S) server, HTTP(S) reverse</span></div><div class="line"><span class="built_in">set</span> <span class="_">-e</span></div><div class="line">PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/sbin:/bin:/usr/sbin:/usr/bin</div><div class="line">DESC=<span class="string">"nginx daemon"</span>  </div><div class="line">NAME=nginx  </div><div class="line">DAEMON=/usr/<span class="built_in">local</span>/nginx/sbin/<span class="variable">$NAME</span>  </div><div class="line">SCRIPTNAME=/etc/init.d/<span class="variable">$NAME</span>  </div><div class="line"><span class="built_in">test</span> -x <span class="variable">$DAEMON</span> || <span class="built_in">exit</span> 0  </div><div class="line"><span class="function"><span class="title">d_start</span></span>()&#123;  </div><div class="line">   <span class="variable">$DAEMON</span> || <span class="built_in">echo</span> -n <span class="string">" already running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_stop</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> quit || <span class="built_in">echo</span> -n <span class="string">" not running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_reload</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> reload || <span class="built_in">echo</span> -n <span class="string">" counld not reload"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span>  </div><div class="line">  start)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Starting <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  stop)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Stopping <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  reload)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Reloading <span class="variable">$DESC</span> configuration..."</span></div><div class="line">     d_reload</div><div class="line">     <span class="built_in">echo</span> <span class="string">"reloaded."</span></div><div class="line">  ;;</div><div class="line">  restart)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Restarting <span class="variable">$DESC</span>: <span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     sleep 2</div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  *)</div><div class="line">     <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$SCRIPTNAME</span> &#123;start|stop|restart|reload&#125;"</span> &gt;&amp;2</div><div class="line">     <span class="built_in">exit</span> 3</div><div class="line">  ;;</div><div class="line"><span class="keyword">esac</span>  </div><div class="line"><span class="built_in">exit</span> 0</div></pre></td></tr></table></figure>
-<h2 id="设置可执行权限"><a href="#设置可执行权限" class="headerlink" title="设置可执行权限"></a>设置可执行权限</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x /etc/rc.d/init.d/nginx</div></pre></td></tr></table></figure>
-<h2 id="添加系统服务"><a href="#添加系统服务" class="headerlink" title="添加系统服务"></a>添加系统服务</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chkconfig --add nginx</div></pre></td></tr></table></figure>
-<h2 id="开机自启动"><a href="#开机自启动" class="headerlink" title="开机自启动"></a>开机自启动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chkconfig --level 35 nginx on</div></pre></td></tr></table></figure>
-<hr>
-<p>原文链接: <a href="http://my.oschina.net/tomener/blog/664469" target="_blank" rel="external">http://my.oschina.net/tomener/blog/664469</a></p>
-
-          
+          <h2 id="新增shell脚本-vi-etc-rc-d-init-d-nginx"><a href="#新增shell脚本-vi-etc-rc-d-init-d-nginx" class="headerlink" title="新增shell脚本 vi /etc/rc.d/init.d/nginx"></a>新增shell脚本 vi /etc/rc.d/init.d/nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#! /bin/bash</span></div><div class="line"><span class="comment"># chkconfig: 35 85 15  </span></div><div class="line"><span class="comment"># description: Nginx is an HTTP(S) server, HTTP(S) reverse</span></div><div class="line"><span class="built_in">set</span> <span class="_">-e</span></div><div class="line">PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/sbin:/bin:/usr/sbin:/usr/bin</div><div class="line">DESC=<span class="string">"nginx daemon"</span>  </div><div class="line">NAME=nginx  </div><div class="line">DAEMON=/usr/<span class="built_in">local</span>/nginx/sbin/<span class="variable">$NAME</span>  </div><div class="line">SCRIPTNAME=/etc/init.d/<span class="variable">$NAME</span>  </div><div class="line"><span class="built_in">test</span> -x <span class="variable">$DAEMON</span> || <span class="built_in">exit</span> 0  </div><div class="line"><span class="function"><span class="title">d_start</span></span>()&#123;  </div><div class="line">   <span class="variable">$DAEMON</span> || <span class="built_in">echo</span> -n <span class="string">" already running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_stop</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> quit || <span class="built_in">echo</span> -n <span class="string">" not running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_reload</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> reload || <span class="built_in">echo</span> -n <span class="string">" counld not reload"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span>  </div><div class="line">  start)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Starting <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  stop)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Stopping <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  reload)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Reloading <span class="variable">$DESC</span> configuration..."</span></div><div class="line">     d_reload</div><div class="line">     <span class="built_in">echo</span> <span class="string">"reloaded."</span></div><div class="line">  ;;</div><div class="line">  restart)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Restarting <span class="variable">$DESC</span>: <span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     sleep 2</div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  *)</div><div class="line">     <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$SCRIPTNAME</span> &#123;start|stop|restart|reload&#125;"</span> &gt;&amp;2</div><div class="line">     <span class="built_in">exit</span> 3</div><div class="line">  ;;</div><div class="line"><span class="keyword">esac</span>  </div><div class="line"><span class="built_in">exit</span> 0</div></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/08/26/Linux-Centos7设置nginx开机自启动/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -770,8 +969,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
                   </a>
                 </span>
 
@@ -797,7 +996,24 @@
 
           
           
+             <span id="/2016/08/01/CentOS7服务器初步配置/" class="leancloud_visitors" data-flag-title="CentOS7服务器初步配置">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
 
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>1,035 字</span>
+                &nbsp; | &nbsp;
+                <span>4 min</span>
+              </span>
           
         </div>
       </header>
@@ -811,63 +1027,16 @@
 
       
         
-          
-            <p>在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程</p>
+          <p>在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程</p>
 <h2 id="第一步：root用户登录"><a href="#第一步：root用户登录" class="headerlink" title="第一步：root用户登录"></a>第一步：root用户登录</h2><p>使用root用户登录远程主机（假定IP地址为192.168.1.125）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh root@192.168.1.125</div></pre></td></tr></table></figure>
 <p>这时，会出现警告，提示这是一个新的地址，存在安全风险。接收则输入yes</p>
 <img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-30-13.png" alt="-----2016-08-22---10-30-13.png" title="">
-<p>登录远程主机之后修改root密码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">passwd</div></pre></td></tr></table></figure>
-<h2 id="第二步：新建用户"><a href="#第二步：新建用户" class="headerlink" title="第二步：新建用户"></a>第二步：新建用户</h2><p>添加一个用户组admin</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">groupadd admin</div></pre></td></tr></table></figure>
-<p>然后，添加一个新的用户</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">useradd <span class="_">-d</span> /home/sangjian <span class="_">-s</span> /bin/bash -m sangjian</div></pre></td></tr></table></figure>
-<p>上面命令中，参数d表示指定用户的主目录，参数s指定用户的shell，参数m表示如果该目录不存在，则创建该目录。</p>
-<p>设置新用户的密码。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">passwd sangjian</div></pre></td></tr></table></figure>
-<p>将sangjian添加到用户组admin中</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">usermod <span class="_">-a</span> -G admin sangjian</div></pre></td></tr></table></figure>
-<p>为sangjian用户设定sudo权限</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">visudo</div></pre></td></tr></table></figure>
-<p>visudo命令会打开文件/etc/sudoers，找到如下一行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root    ALL=(ALL) ALL</div></pre></td></tr></table></figure>
-<p>添加一行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sangjian    ALL=(ALL) NOPASSWD: ALL</div></pre></td></tr></table></figure>
-<p>上面的NOPASSWD表示，切换sudo的时候，不需要输入密码，我喜欢这样比较省事。如果出于安全考虑，也可以强制要求输入密码。<br>另开一个终端，以sangjian用户登录，检查是否设置成功</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh sangjian@192.168.1.125</div></pre></td></tr></table></figure>
-<h2 id="第三步：SSH设置"><a href="#第三步：SSH设置" class="headerlink" title="第三步：SSH设置"></a>第三步：SSH设置</h2><p>查看本机是否有SSH公钥（一般是~/.ssh/id_rsa.pub），如果没有则可以使用ssh-keygen命令生成<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen</div></pre></td></tr></table></figure></p>
-<p>想省事的话可以一直按回车即可</p>
-<p>将刚生成的id_rsa.pub文件的内容追加到服务器的authorized_keys文件中<br>可以使用scp命令将生成的id_rsa.pub文件上传到服务器中，再将文件的内容追加到authorized_keys文件中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp ~/.ssh/id_rsa.pub sangjian@192.168.1.125:/home/sangjian/mac_id_rsa.pub</div></pre></td></tr></table></figure></p>
-<p>上面的命令是将本地的公钥上传到服务器中的/home/sangjian目录下的mac_id_rsa.pub文件中</p>
-<p>再执行追加命令（如果~/.ssh目录不存在，则新建）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat mac_id_rsa.pub &gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure></p>
-<p>修改SSH配置文件/etc/ssh/sshd_config<br>在配置文件中找到 <code>#Port 22</code>，修改默认的端口，范围可以从1025到65536<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Port 6983</div></pre></td></tr></table></figure></p>
-<p>修改如下设置并确保去除了#号<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Protocol 2</div><div class="line"><span class="comment">#禁止root用户登录</span></div><div class="line">PermitRootLogin no</div><div class="line"></div><div class="line"><span class="comment">#禁止使用密码登录</span></div><div class="line">PasswordAuthentication no</div><div class="line">PermitEmptyPasswords no</div><div class="line">PasswordAuthentication yes</div></pre></td></tr></table></figure></p>
-<p>最后，在配置文件的末尾添加一行用来指定可以登录的用户<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">AllowUsers sangjian</div></pre></td></tr></table></figure></p>
-<p>保存退出后，修改authorized_keys和.ssh的文件权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo chmod 700 ~/.ssh/</div><div class="line">sudo chmod 600 ~/.ssh/authorized_keys</div></pre></td></tr></table></figure></p>
-<p>确保.ssh的权限为700，authorized_keys的权限为600，否则登录的时候会出现如下错误</p>
-<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-54-52.png" alt="-----2016-08-22---10-54-52.png" title="">
-<p>查看日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tail -n 20 /var/<span class="built_in">log</span>/secure</div></pre></td></tr></table></figure></p>
-<p>可以看到登录时的日志有如下一句</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">localhost sshd[2359]: Authentication refused: bad ownership or modes <span class="keyword">for</span> file /home/sangjian/.ssh/authorized_keys</div></pre></td></tr></table></figure>
-<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-58-33.png" alt="-----2016-08-22---10-58-33.png" title="">
-<p>重启SSHD<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo service sshd restart</div></pre></td></tr></table></figure></p>
-<p>检查是否可以免密码登录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh sangjian@192.168.1.125 -p 6983</div></pre></td></tr></table></figure></p>
-<p>发现不可以，提示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh: connect to host 192.168.1.125 port 6983: Connection refused</div></pre></td></tr></table></figure></p>
-<h2 id="第四步：登录失败问题解决"><a href="#第四步：登录失败问题解决" class="headerlink" title="第四步：登录失败问题解决"></a>第四步：登录失败问题解决</h2><p>出现这一情况主要是防火墙端口开放的问题<br>查看日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tail -n 20 /var/<span class="built_in">log</span>/secure</div></pre></td></tr></table></figure></p>
-<p>发现没有失败的日志输出<br>查看防火墙是否开启<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl status firewalld</div></pre></td></tr></table></figure></p>
-<p>如果开启了，则原因就是刚刚设置的ssh端口6983并没有添加到防火墙中<br>添加端口到防火墙<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo firewall-cmd --zone=public --permanent --add-port=6983/tcp</div></pre></td></tr></table></figure></p>
-<p>重启防火墙<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl restart firewalld</div></pre></td></tr></table></figure></p>
-<p>查看端口是否添加成功</p>
-<p>执行<code>sudo firewall-cmd --list-all</code>，如果出现以下输出，则证明添加成功</p>
-<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---11-18-34.png" alt="-----2016-08-22---11-18-34.png" title="">
-<h2 id="第五步-登录服务器"><a href="#第五步-登录服务器" class="headerlink" title="第五步 登录服务器"></a>第五步 登录服务器</h2><p>SSH的配置已经完成了，下面测试以下是否可以登录</p>
-<p>输入<code>ssh sangjian@192.168.1.125 -p 6983</code>，提示</p>
-<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---11-20-02.png" alt="-----2016-08-22---11-20-02.png" title="">
-<p>表示已经登录成功了，至此基于Centos7的服务器初步配置已经完成了。</p>
-<p>本文主要介绍了SSH配置，剩下的可以根据需要配置一些安全相关的设置，比如防火墙的设置，端口的限制等等。</p>
-
-          
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/08/01/CentOS7服务器初步配置/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -935,7 +1104,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -943,7 +1112,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">1</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -960,6 +1129,13 @@
 
         </nav>
 
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
         
 
         <div class="links-of-author motion-element">
@@ -1114,6 +1290,105 @@
   
 
   
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("mI3fROQj8loMvwBe0hQWTgLD-gzGzoHsz", "MyNIlLz7uUKSexkXWgeWFVKp");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
 
   
 
