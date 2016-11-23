@@ -21,6 +21,8 @@ Tomcat是一个开源的软件，其实现了Java Servlet, JavaServer Pages, Jav
 
 **Stable** 可能包含少量相对较小的错误。稳定版本可以用于进行生产环境使用，预计可以长时间稳定地运行。
 
+<!-- more -->
+
 参考：[Apache Tomcat Versions](http://tomcat.apache.org/whichversion.html)
 
 ## Tomcat 8.0.x 版本

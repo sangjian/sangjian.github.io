@@ -121,6 +121,14 @@
               <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>{{ theme.busuanzi_count.page_pv_footer }}
               </span>
           {% endif %}
+          {% if theme.word_count %}
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>{{ wordcount(post.content) }} 字</span>
+                &nbsp; | &nbsp;
+                <span>{{ min2read(post.content) }} min</span>
+              </span>
+          {% endif %}
         </div>
       </header>
     {% endif %}

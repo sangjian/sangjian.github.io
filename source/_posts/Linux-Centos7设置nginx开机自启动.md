@@ -1,6 +1,7 @@
 ---
 title: Linux/Centos7设置nginx开机自启动
 date: 2016-08-26 00:04:12
+categories: 服务器
 tags:
 - CentOS
 - Linux
@@ -57,6 +58,8 @@ case "$1" in
 esac  
 exit 0  
 ```
+<!-- more -->
+
 ## 设置可执行权限
 ```bash
 chmod +x /etc/rc.d/init.d/nginx
