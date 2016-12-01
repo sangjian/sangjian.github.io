@@ -1,0 +1,969 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tomcat," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Idea Buffer" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="上篇文章分析了Bootstrap类的启动流程，可以知道，Bootstrap实际上是调用了Catalina类的对象来实现Tomcat的启动的，这篇文章来介绍一下Catalina类的启动流程。
+回顾一下Bootstrap中main方法执行启动时的代码：
+12345if (command.equals(&quot;start&quot;)) &amp;#123;    daemon.setAwait(true);    daemo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tomcat源码：Catalina启动流程">
+<meta property="og:url" content="http://www.ideabuffer.cn/2016/11/27/Tomcat源码：Catalina启动流程/index.html">
+<meta property="og:site_name" content="Idea Buffer">
+<meta property="og:description" content="上篇文章分析了Bootstrap类的启动流程，可以知道，Bootstrap实际上是调用了Catalina类的对象来实现Tomcat的启动的，这篇文章来介绍一下Catalina类的启动流程。
+回顾一下Bootstrap中main方法执行启动时的代码：
+12345if (command.equals(&quot;start&quot;)) &amp;#123;    daemon.setAwait(true);    daemo">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/11/27/Tomcat源码：Catalina启动流程/tomcat-components.png">
+<meta property="og:updated_time" content="2016-11-27T08:03:44.657Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tomcat源码：Catalina启动流程">
+<meta name="twitter:description" content="上篇文章分析了Bootstrap类的启动流程，可以知道，Bootstrap实际上是调用了Catalina类的对象来实现Tomcat的启动的，这篇文章来介绍一下Catalina类的启动流程。
+回顾一下Bootstrap中main方法执行启动时的代码：
+12345if (command.equals(&quot;start&quot;)) &amp;#123;    daemon.setAwait(true);    daemo">
+<meta name="twitter:image" content="http://www.ideabuffer.cn/2016/11/27/Tomcat源码：Catalina启动流程/tomcat-components.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6319057304863901000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Tomcat源码：Catalina启动流程 | Idea Buffer </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9ad13c2f9edb81550c28aff1e84a4e06";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Idea Buffer</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">桑健的博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Tomcat源码：Catalina启动流程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-27T00:10:55+08:00" content="2016-11-27">
+              2016-11-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/27/Tomcat源码：Catalina启动流程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/27/Tomcat源码：Catalina启动流程/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/27/Tomcat源码：Catalina启动流程/" class="leancloud_visitors" data-flag-title="Tomcat源码：Catalina启动流程">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>2,198 字</span>
+                &nbsp; | &nbsp;
+                <span>11 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上篇文章分析了<code>Bootstrap</code>类的启动流程，可以知道，<code>Bootstrap</code>实际上是调用了<code>Catalina</code>类的对象来实现Tomcat的启动的，这篇文章来介绍一下<code>Catalina</code>类的启动流程。</p>
+<p>回顾一下<code>Bootstrap</code>中main方法执行启动时的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (command.equals(<span class="string">"start"</span>)) &#123;</div><div class="line">    daemon.setAwait(<span class="keyword">true</span>);</div><div class="line">    daemon.load(args);</div><div class="line">    daemon.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面介绍Catalina类中的方法。</p>
+<a id="more"></a>
+<h2 id="await方法"><a href="#await方法" class="headerlink" title="await方法"></a>await方法</h2><p><code>daemon.setAwait(true);</code>表示该Tomcat已经执行了启动，也是调用了<code>Catalina</code>中的<code>setAwait</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Await and shutdown.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">await</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    getServer().await();</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里又调用的<code>Server</code>的<code>await</code>方法，<code>await</code>方法的作用就是判断当前启动的Server所要绑定的端口（默认是8005）是否被占用，如果被占用，则会抛出以下异常：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">严重: StandardServer.await: create[localhost:8005]: </div><div class="line">java.net.BindException: Address already in use</div><div class="line">	at java.net.PlainSocketImpl.socketBind(Native Method)</div><div class="line">	at java.net.AbstractPlainSocketImpl.bind(AbstractPlainSocketImpl.java:387)</div><div class="line">	at java.net.ServerSocket.bind(ServerSocket.java:375)</div><div class="line">	at java.net.ServerSocket.&lt;init&gt;(ServerSocket.java:237)</div><div class="line">	at org.apache.catalina.core.StandardServer.await(StandardServer.java:441)</div><div class="line">	at org.apache.catalina.startup.Catalina.await(Catalina.java:743)</div><div class="line">	at org.apache.catalina.startup.Catalina.start(Catalina.java:689)</div><div class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</div><div class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</div><div class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</div><div class="line">	at java.lang.reflect.Method.invoke(Method.java:497)</div><div class="line">	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:355)</div><div class="line">	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:495)</div></pre></td></tr></table></figure>
+<h2 id="load方法"><a href="#load方法" class="headerlink" title="load方法"></a>load方法</h2><p><code>Bootstrap</code>类中的<code>load</code>方法会调用<code>Catalina</code>中的<code>load</code>方法，<code>Catalina</code>中的<code>load</code>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Start a new server instance.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">load</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">long</span> t1 = System.nanoTime();</div><div class="line"></div><div class="line">    initDirs();</div><div class="line"></div><div class="line">    <span class="comment">// Before digester - it may be needed</span></div><div class="line">    initNaming();</div><div class="line"></div><div class="line">    <span class="comment">//使用Digester创建server.xml文件的对象，生成相应的处理规则</span></div><div class="line">    <span class="comment">// Create and execute our Digester</span></div><div class="line">    Digester digester = createStartDigester();</div><div class="line"></div><div class="line">    InputSource inputSource = <span class="keyword">null</span>;</div><div class="line">    InputStream inputStream = <span class="keyword">null</span>;</div><div class="line">    File file = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 获取配置文件，server.xml</span></div><div class="line">            file = configFile();</div><div class="line">            inputStream = <span class="keyword">new</span> FileInputStream(file);</div><div class="line">            inputSource = <span class="keyword">new</span> InputSource(file.toURI().toURL().toString());</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</div><div class="line">                log.debug(sm.getString(<span class="string">"catalina.configFail"</span>, file), e);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (inputStream == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                inputStream = getClass().getClassLoader()</div><div class="line">                    .getResourceAsStream(getConfigFile());</div><div class="line">                inputSource = <span class="keyword">new</span> InputSource</div><div class="line">                    (getClass().getClassLoader()</div><div class="line">                     .getResource(getConfigFile()).toString());</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</div><div class="line">                    log.debug(sm.getString(<span class="string">"catalina.configFail"</span>,</div><div class="line">                            getConfigFile()), e);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// This should be included in catalina.jar</span></div><div class="line">        <span class="comment">// Alternative: don't bother with xml, just create it manually.</span></div><div class="line">        <span class="keyword">if</span> (inputStream == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                inputStream = getClass().getClassLoader()</div><div class="line">                        .getResourceAsStream(<span class="string">"server-embed.xml"</span>);</div><div class="line">                inputSource = <span class="keyword">new</span> InputSource</div><div class="line">                (getClass().getClassLoader()</div><div class="line">                        .getResource(<span class="string">"server-embed.xml"</span>).toString());</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</div><div class="line">                    log.debug(sm.getString(<span class="string">"catalina.configFail"</span>,</div><div class="line">                            <span class="string">"server-embed.xml"</span>), e);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="keyword">if</span> (inputStream == <span class="keyword">null</span> || inputSource == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">if</span>  (file == <span class="keyword">null</span>) &#123;</div><div class="line">                log.warn(sm.getString(<span class="string">"catalina.configFail"</span>,</div><div class="line">                        getConfigFile() + <span class="string">"] or [server-embed.xml]"</span>));</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                log.warn(sm.getString(<span class="string">"catalina.configFail"</span>,</div><div class="line">                        file.getAbsolutePath()));</div><div class="line">                <span class="keyword">if</span> (file.exists() &amp;&amp; !file.canRead()) &#123;</div><div class="line">                    log.warn(<span class="string">"Permissions incorrect, read permission is not allowed on the file."</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            inputSource.setByteStream(inputStream);</div><div class="line">            </div><div class="line">            <span class="comment">//将Catalina对象压入栈底，server对象生成之后会调用当前对象的setServer方法来设置server对象</span></div><div class="line">            digester.push(<span class="keyword">this</span>);</div><div class="line">            digester.parse(inputSource);</div><div class="line">        &#125; <span class="keyword">catch</span> (SAXParseException spe) &#123;</div><div class="line">            log.warn(<span class="string">"Catalina.start using "</span> + getConfigFile() + <span class="string">": "</span> +</div><div class="line">                    spe.getMessage());</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            log.warn(<span class="string">"Catalina.start using "</span> + getConfigFile() + <span class="string">": "</span> , e);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="keyword">if</span> (inputStream != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                inputStream.close();</div><div class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                <span class="comment">// Ignore</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    getServer().setCatalina(<span class="keyword">this</span>);</div><div class="line">    getServer().setCatalinaHome(Bootstrap.getCatalinaHomeFile());</div><div class="line">    getServer().setCatalinaBase(Bootstrap.getCatalinaBaseFile());</div><div class="line"></div><div class="line">    <span class="comment">// Stream redirection</span></div><div class="line">    initStreams();</div><div class="line"></div><div class="line">    <span class="comment">// Start the new server</span></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 初始化server</span></div><div class="line">        getServer().init();</div><div class="line">    &#125; <span class="keyword">catch</span> (LifecycleException e) &#123;</div><div class="line">        <span class="keyword">if</span> (Boolean.getBoolean(<span class="string">"org.apache.catalina.startup.EXIT_ON_INIT_FAILURE"</span>)) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> java.lang.Error(e);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            log.error(<span class="string">"Catalina.start"</span>, e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">long</span> t2 = System.nanoTime();</div><div class="line">    <span class="keyword">if</span>(log.isInfoEnabled()) &#123;</div><div class="line">        log.info(<span class="string">"Initialization processed in "</span> + ((t2 - t1) / <span class="number">1000000</span>) + <span class="string">" ms"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该方法主要的工作是：</p>
+<ol>
+<li>解析server.xml配置文件</li>
+<li>根据server.xml文件创建对象，包括server，listener，service，connector，container等等</li>
+<li>初始化上面创建的对象</li>
+</ol>
+<h2 id="server-xml文件结构"><a href="#server-xml文件结构" class="headerlink" title="server.xml文件结构"></a>server.xml文件结构</h2><p>在往下看之前，还是说一下<code>server.xml</code>的文件结构吧，也好参考的代码做对比，结构如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">Server</span> <span class="attr">port</span>=<span class="string">"8005"</span> <span class="attr">shutdown</span>=<span class="string">"SHUTDOWN"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Listener</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.startup.VersionLoggerListener"</span> /&gt;</span></div><div class="line">  ...</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">GlobalNamingResources</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">Resource</span> <span class="attr">name</span>=<span class="string">"UserDatabase"</span> <span class="attr">auth</span>=<span class="string">"Container"</span></span></div><div class="line">              <span class="attr">type</span>=<span class="string">"org.apache.catalina.UserDatabase"</span></div><div class="line">              <span class="attr">description</span>=<span class="string">"User database that can be updated and saved"</span></div><div class="line">              <span class="attr">factory</span>=<span class="string">"org.apache.catalina.users.MemoryUserDatabaseFactory"</span></div><div class="line">              <span class="attr">pathname</span>=<span class="string">"conf/tomcat-users.xml"</span> /&gt;</div><div class="line">  <span class="tag">&lt;/<span class="name">GlobalNamingResources</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">Service</span> <span class="attr">name</span>=<span class="string">"Catalina"</span>&gt;</span></div><div class="line"></div><div class="line">    </div><div class="line">    <span class="tag">&lt;<span class="name">Executor</span> <span class="attr">name</span>=<span class="string">"tomcatThreadPool"</span> <span class="attr">namePrefix</span>=<span class="string">"catalina-exec-"</span></span></div><div class="line">        <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">minSpareThreads</span>=<span class="string">"4"</span>/&gt;</div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span></span></div><div class="line">               <span class="attr">connectionTimeout</span>=<span class="string">"20000"</span></div><div class="line">               <span class="attr">redirectPort</span>=<span class="string">"8443"</span> /&gt;</div><div class="line">   ...</div><div class="line"></div><div class="line">    </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Engine</span> <span class="attr">name</span>=<span class="string">"Catalina"</span> <span class="attr">defaultHost</span>=<span class="string">"localhost"</span>&gt;</span></div><div class="line"></div><div class="line">     </div><div class="line"></div><div class="line">      <span class="comment">&lt;!-- Use the LockOutRealm to prevent attempts to guess user passwords</span></div><div class="line">           via a brute-force attack --&gt;</div><div class="line">      <span class="tag">&lt;<span class="name">Realm</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.realm.LockOutRealm"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">Realm</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.realm.UserDatabaseRealm"</span></span></div><div class="line">               <span class="attr">resourceName</span>=<span class="string">"UserDatabase"</span>/&gt;</div><div class="line">      <span class="tag">&lt;/<span class="name">Realm</span>&gt;</span></div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"localhost"</span>  <span class="attr">appBase</span>=<span class="string">"webapps"</span></span></div><div class="line">            <span class="attr">unpackWARs</span>=<span class="string">"true"</span> <span class="attr">autoDeploy</span>=<span class="string">"true"</span>&gt;</div><div class="line"></div><div class="line">        </div><div class="line">        <span class="tag">&lt;<span class="name">Valve</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.authenticator.SingleSignOn"</span> /&gt;</span></div><div class="line">        ...</div><div class="line">        <span class="tag">&lt;<span class="name">Context</span>&gt;</span>...<span class="tag">&lt;/<span class="name">Context</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">Host</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">Engine</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">Service</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">Server</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这里列出了大概的结构，接下来说明是解析<code>server.xml</code>的流程。</p>
+<h2 id="createStartDigester方法"><a href="#createStartDigester方法" class="headerlink" title="createStartDigester方法"></a>createStartDigester方法</h2><p>该方法负责创建一个<code>Digester</code>对象，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Create and configure the Digester we will be using for startup.</div><div class="line"> * <span class="doctag">@return</span> the main digester to parse server.xml</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">protected</span> Digester <span class="title">createStartDigester</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">long</span> t1=System.currentTimeMillis();</div><div class="line">    <span class="comment">// Initialize the digester</span></div><div class="line">    Digester digester = <span class="keyword">new</span> Digester();</div><div class="line">    digester.setValidating(<span class="keyword">false</span>);</div><div class="line">    digester.setRulesValidation(<span class="keyword">true</span>);</div><div class="line">    HashMap&lt;Class&lt;?&gt;, List&lt;String&gt;&gt; fakeAttributes = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    ArrayList&lt;String&gt; attrs = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    attrs.add(<span class="string">"className"</span>);</div><div class="line">    fakeAttributes.put(Object.class, attrs);</div><div class="line">    digester.setFakeAttributes(fakeAttributes);</div><div class="line">    digester.setUseContextClassLoader(<span class="keyword">true</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 增加创建server对象的规则</span></div><div class="line">    <span class="comment">// Configure the actions we will be using</span></div><div class="line">    digester.addObjectCreate(<span class="string">"Server"</span>,</div><div class="line">                             <span class="string">"org.apache.catalina.core.StandardServer"</span>,</div><div class="line">                             <span class="string">"className"</span>);</div><div class="line">    <span class="comment">// 增加设置Server属性的规则，用户在Server对象创建完之后设置Server对象的属性值</span></div><div class="line">    digester.addSetProperties(<span class="string">"Server"</span>);</div><div class="line">    <span class="comment">// Server对象创建完成后，会调用它前一个对象的setServer方法，并把自己作为参数</span></div><div class="line">    digester.addSetNext(<span class="string">"Server"</span>,</div><div class="line">                        <span class="string">"setServer"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.Server"</span>);</div><div class="line"></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/GlobalNamingResources"</span>,</div><div class="line">                             <span class="string">"org.apache.catalina.deploy.NamingResourcesImpl"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/GlobalNamingResources"</span>);</div><div class="line">    digester.addSetNext(<span class="string">"Server/GlobalNamingResources"</span>,</div><div class="line">                        <span class="string">"setGlobalNamingResources"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.deploy.NamingResourcesImpl"</span>);</div><div class="line"></div><div class="line">    <span class="comment">//创建listener，其中第二个参数为空，表示必须在配置文件中指定className</span></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/Listener"</span>,</div><div class="line">                             <span class="keyword">null</span>, <span class="comment">// MUST be specified in the element</span></div><div class="line">                             <span class="string">"className"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/Listener"</span>);</div><div class="line">    digester.addSetNext(<span class="string">"Server/Listener"</span>,</div><div class="line">                        <span class="string">"addLifecycleListener"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.LifecycleListener"</span>);</div><div class="line"></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/Service"</span>,</div><div class="line">                             <span class="string">"org.apache.catalina.core.StandardService"</span>,</div><div class="line">                             <span class="string">"className"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/Service"</span>);</div><div class="line">    digester.addSetNext(<span class="string">"Server/Service"</span>,</div><div class="line">                        <span class="string">"addService"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.Service"</span>);</div><div class="line"></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/Service/Listener"</span>,</div><div class="line">                             <span class="keyword">null</span>, <span class="comment">// MUST be specified in the element</span></div><div class="line">                             <span class="string">"className"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/Service/Listener"</span>);</div><div class="line">    digester.addSetNext(<span class="string">"Server/Service/Listener"</span>,</div><div class="line">                        <span class="string">"addLifecycleListener"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.LifecycleListener"</span>);</div><div class="line"></div><div class="line">    <span class="comment">//Executor</span></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/Service/Executor"</span>,</div><div class="line">                     <span class="string">"org.apache.catalina.core.StandardThreadExecutor"</span>,</div><div class="line">                     <span class="string">"className"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/Service/Executor"</span>);</div><div class="line"></div><div class="line">    digester.addSetNext(<span class="string">"Server/Service/Executor"</span>,</div><div class="line">                        <span class="string">"addExecutor"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.Executor"</span>);</div><div class="line"></div><div class="line"></div><div class="line">    digester.addRule(<span class="string">"Server/Service/Connector"</span>,</div><div class="line">                     <span class="keyword">new</span> ConnectorCreateRule());</div><div class="line">    digester.addRule(<span class="string">"Server/Service/Connector"</span>,</div><div class="line">                     <span class="keyword">new</span> SetAllPropertiesRule(<span class="keyword">new</span> String[]&#123;<span class="string">"executor"</span>, <span class="string">"sslImplementationName"</span>&#125;));</div><div class="line">    digester.addSetNext(<span class="string">"Server/Service/Connector"</span>,</div><div class="line">                        <span class="string">"addConnector"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.connector.Connector"</span>);</div><div class="line"></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/Service/Connector/SSLHostConfig"</span>,</div><div class="line">                             <span class="string">"org.apache.tomcat.util.net.SSLHostConfig"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/Service/Connector/SSLHostConfig"</span>);</div><div class="line">    digester.addSetNext(<span class="string">"Server/Service/Connector/SSLHostConfig"</span>,</div><div class="line">            <span class="string">"addSslHostConfig"</span>,</div><div class="line">            <span class="string">"org.apache.tomcat.util.net.SSLHostConfig"</span>);</div><div class="line"></div><div class="line">    digester.addRule(<span class="string">"Server/Service/Connector/SSLHostConfig/Certificate"</span>,</div><div class="line">                     <span class="keyword">new</span> CertificateCreateRule());</div><div class="line">    digester.addRule(<span class="string">"Server/Service/Connector/SSLHostConfig/Certificate"</span>,</div><div class="line">                     <span class="keyword">new</span> SetAllPropertiesRule(<span class="keyword">new</span> String[]&#123;<span class="string">"type"</span>&#125;));</div><div class="line">    digester.addSetNext(<span class="string">"Server/Service/Connector/SSLHostConfig/Certificate"</span>,</div><div class="line">                        <span class="string">"addCertificate"</span>,</div><div class="line">                        <span class="string">"org.apache.tomcat.util.net.SSLHostConfigCertificate"</span>);</div><div class="line"></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/Service/Connector/Listener"</span>,</div><div class="line">                             <span class="keyword">null</span>, <span class="comment">// MUST be specified in the element</span></div><div class="line">                             <span class="string">"className"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/Service/Connector/Listener"</span>);</div><div class="line">    digester.addSetNext(<span class="string">"Server/Service/Connector/Listener"</span>,</div><div class="line">                        <span class="string">"addLifecycleListener"</span>,</div><div class="line">                        <span class="string">"org.apache.catalina.LifecycleListener"</span>);</div><div class="line"></div><div class="line">    digester.addObjectCreate(<span class="string">"Server/Service/Connector/UpgradeProtocol"</span>,</div><div class="line">                              <span class="keyword">null</span>, <span class="comment">// MUST be specified in the element</span></div><div class="line">                              <span class="string">"className"</span>);</div><div class="line">    digester.addSetProperties(<span class="string">"Server/Service/Connector/UpgradeProtocol"</span>);</div><div class="line">    digester.addSetNext(<span class="string">"Server/Service/Connector/UpgradeProtocol"</span>,</div><div class="line">                        <span class="string">"addUpgradeProtocol"</span>,</div><div class="line">                        <span class="string">"org.apache.coyote.UpgradeProtocol"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// Add RuleSets for nested elements</span></div><div class="line">    digester.addRuleSet(<span class="keyword">new</span> NamingRuleSet(<span class="string">"Server/GlobalNamingResources/"</span>));</div><div class="line">    digester.addRuleSet(<span class="keyword">new</span> EngineRuleSet(<span class="string">"Server/Service/"</span>));</div><div class="line">    digester.addRuleSet(<span class="keyword">new</span> HostRuleSet(<span class="string">"Server/Service/Engine/"</span>));</div><div class="line">    digester.addRuleSet(<span class="keyword">new</span> ContextRuleSet(<span class="string">"Server/Service/Engine/Host/"</span>));</div><div class="line">    addClusterRuleSet(digester, <span class="string">"Server/Service/Engine/Host/Cluster/"</span>);</div><div class="line">    digester.addRuleSet(<span class="keyword">new</span> NamingRuleSet(<span class="string">"Server/Service/Engine/Host/Context/"</span>));</div><div class="line"></div><div class="line">    <span class="comment">// When the 'engine' is found, set the parentClassLoader.</span></div><div class="line">    digester.addRule(<span class="string">"Server/Service/Engine"</span>,</div><div class="line">                     <span class="keyword">new</span> SetParentClassLoaderRule(parentClassLoader));</div><div class="line">    addClusterRuleSet(digester, <span class="string">"Server/Service/Engine/Cluster/"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">long</span> t2=System.currentTimeMillis();</div><div class="line">    <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</div><div class="line">        log.debug(<span class="string">"Digester for server.xml created "</span> + ( t2-t1 ));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> (digester);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面我只注释了创建Server对象的部分，其他的原理都类似，就不多说了，这里要注意一个地方：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Server对象创建完成后，会调用它前一个对象的setServer方法，并把自己作为参数</span></div><div class="line">digester.addSetNext(<span class="string">"Server"</span>, <span class="string">"setServer"</span>, <span class="string">"org.apache.catalina.Server"</span>);</div></pre></td></tr></table></figure>
+<p>回顾一下<code>load</code>方法中的这段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//将Catalina对象压入栈底，server对象生成之后会调用当前对象的setServer方法来设置server对象</span></div><div class="line">digester.push(<span class="keyword">this</span>);</div><div class="line">digester.parse(inputSource);</div></pre></td></tr></table></figure>
+<p>意思就是把当前的<code>Catalina</code>对象压入栈底，然后解析配置文件。所以在Server对象创建完成后，会调用<code>Catalina</code>对象的setServer方法。</p>
+<p>这里简单介绍一下<code>Digester</code>解析的原理：</p>
+<ul>
+<li>Digester实例有一个内部栈用来临时存储对象。当addObjectCreate方法实例化一个类时，就将结果放到栈中。</li>
+<li>当调用两个addObjectCreate方法时，第一个对象首先放入栈中，接着是第二个对象。</li>
+<li>addSetNext方法用于创建两个对象之间的关系，其通过调用第一个对象指定的方法并以第二个对象作为参数传递给这个方法。</li>
+</ul>
+<p>有关<code>Digester</code>库的更详细的用法，请自行查找相关资料。</p>
+<h2 id="start方法"><a href="#start方法" class="headerlink" title="start方法"></a>start方法</h2><p>这里才是真正启动tomcat的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Start a new server instance.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (getServer() == <span class="keyword">null</span>) &#123;</div><div class="line">        load();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (getServer() == <span class="keyword">null</span>) &#123;</div><div class="line">        log.fatal(<span class="string">"Cannot start server. Server instance is not configured."</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">long</span> t1 = System.nanoTime();</div><div class="line"></div><div class="line">    <span class="comment">// Start the new server</span></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 启动server</span></div><div class="line">        getServer().start();</div><div class="line">    &#125; <span class="keyword">catch</span> (LifecycleException e) &#123;</div><div class="line">        log.fatal(sm.getString(<span class="string">"catalina.serverStartFail"</span>), e);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            getServer().destroy();</div><div class="line">        &#125; <span class="keyword">catch</span> (LifecycleException e1) &#123;</div><div class="line">            log.debug(<span class="string">"destroy() failed for failed Server "</span>, e1);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">long</span> t2 = System.nanoTime();</div><div class="line">    <span class="keyword">if</span>(log.isInfoEnabled()) &#123;</div><div class="line">        log.info(<span class="string">"Server startup in "</span> + ((t2 - t1) / <span class="number">1000000</span>) + <span class="string">" ms"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Register shutdown hook</span></div><div class="line">    <span class="keyword">if</span> (useShutdownHook) &#123;</div><div class="line">        <span class="keyword">if</span> (shutdownHook == <span class="keyword">null</span>) &#123;</div><div class="line">            shutdownHook = <span class="keyword">new</span> CatalinaShutdownHook();</div><div class="line">        &#125;</div><div class="line">        Runtime.getRuntime().addShutdownHook(shutdownHook);</div><div class="line"></div><div class="line">        <span class="comment">// If JULI is being used, disable JULI's shutdown hook since</span></div><div class="line">        <span class="comment">// shutdown hooks run in parallel and log messages may be lost</span></div><div class="line">        <span class="comment">// if JULI's hook completes before the CatalinaShutdownHook()</span></div><div class="line">        LogManager logManager = LogManager.getLogManager();</div><div class="line">        <span class="keyword">if</span> (logManager <span class="keyword">instanceof</span> ClassLoaderLogManager) &#123;</div><div class="line">            ((ClassLoaderLogManager) logManager).setUseShutdownHook(</div><div class="line">                    <span class="keyword">false</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (await) &#123;</div><div class="line">        await();</div><div class="line">        stop();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>await</code>在开头已经讨论过，就不说了。这里的<code>getServer().start()</code>是负责启动server对象的，其实server对象需要做的只是启动<code>globalNamingResources</code>和<code>service</code>，进而会启动整个tomcat，通过上面给出的<code>server.xml</code>文件的结构也可以知道，因为<code>GlobalNamingResources</code>和<code>Service</code>是<code>Server</code>的子元素。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，<code>Catalina</code>的初始化和启动工作流程算是完成了。</p>
+<p>由<a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/">上一篇：Tomcat源码：Bootstrap启动流程</a>和这篇文章来看，我们已经大概了解了tomcat的启动过程，所以可以总结出来tomcat的各个组件的层次关系大概如下图所示：</p>
+<img src="/2016/11/27/Tomcat源码：Catalina启动流程/tomcat-components.png" alt="tomcat-components.png" title="">
+<p>层次结构还算比较清晰的，接下来就是各个组件的初始化和启动的工作流程，这些流程后续有时间也会详细讨论。</p>
+<p>睡觉。。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Tomcat/" rel="tag">#Tomcat</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/" rel="next" title="Tomcat源码：Bootstrap启动流程">
+                <i class="fa fa-chevron-left"></i> Tomcat源码：Bootstrap启动流程
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/02/Java7中的try-with-resources/" rel="prev" title="Java7 中的try-with-resources">
+                Java7 中的try-with-resources <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/27/Tomcat源码：Catalina启动流程/"
+           data-title="Tomcat源码：Catalina启动流程" data-url="http://www.ideabuffer.cn/2016/11/27/Tomcat源码：Catalina启动流程/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Neo" />
+          <p class="site-author-name" itemprop="name">Neo</p>
+          <p class="site-description motion-element" itemprop="description">More Articles,More Ideas</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#await方法"><span class="nav-number">1.</span> <span class="nav-text">await方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#load方法"><span class="nav-number">2.</span> <span class="nav-text">load方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#server-xml文件结构"><span class="nav-number">3.</span> <span class="nav-text">server.xml文件结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#createStartDigester方法"><span class="nav-number">4.</span> <span class="nav-text">createStartDigester方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#start方法"><span class="nav-number">5.</span> <span class="nav-text">start方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Neo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sangjian"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="//cdn.bootcss.com/UAParser.js/0.7.9/ua-parser.min.js"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("mI3fROQj8loMvwBe0hQWTgLD-gzGzoHsz", "MyNIlLz7uUKSexkXWgeWFVKp");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tomcat," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Idea Buffer" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Tomcat的启动流程从整体上来说并不算复杂，启动的入口就是从Bootstrap类的main方法开始的，这篇文章就让我们来看一下Bootstrap这个类都干了些什么。
+Bootstrap类中的变量首先看下Bootstrap都定义了哪些变量
+12345678910111213141516// Bootstrap类的引用private static Bootstrap daemon = null;//">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tomcat源码：Bootstrap启动流程">
+<meta property="og:url" content="http://www.ideabuffer.cn/2016/11/26/Tomcat源码：Bootstrap启动流程/index.html">
+<meta property="og:site_name" content="Idea Buffer">
+<meta property="og:description" content="Tomcat的启动流程从整体上来说并不算复杂，启动的入口就是从Bootstrap类的main方法开始的，这篇文章就让我们来看一下Bootstrap这个类都干了些什么。
+Bootstrap类中的变量首先看下Bootstrap都定义了哪些变量
+12345678910111213141516// Bootstrap类的引用private static Bootstrap daemon = null;//">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/11/26/Tomcat源码：Bootstrap启动流程/jvm-class-loader.png">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/11/26/Tomcat源码：Bootstrap启动流程/tomcat-class-loader.png">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/11/26/Tomcat源码：Bootstrap启动流程/B2439EFA-6276-425A-A807-C66B975E59F6.png">
+<meta property="og:updated_time" content="2016-11-26T15:35:03.669Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tomcat源码：Bootstrap启动流程">
+<meta name="twitter:description" content="Tomcat的启动流程从整体上来说并不算复杂，启动的入口就是从Bootstrap类的main方法开始的，这篇文章就让我们来看一下Bootstrap这个类都干了些什么。
+Bootstrap类中的变量首先看下Bootstrap都定义了哪些变量
+12345678910111213141516// Bootstrap类的引用private static Bootstrap daemon = null;//">
+<meta name="twitter:image" content="http://www.ideabuffer.cn/2016/11/26/Tomcat源码：Bootstrap启动流程/jvm-class-loader.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6319057304863901000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Tomcat源码：Bootstrap启动流程 | Idea Buffer </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9ad13c2f9edb81550c28aff1e84a4e06";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Idea Buffer</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">桑健的博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Tomcat源码：Bootstrap启动流程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-26T19:19:13+08:00" content="2016-11-26">
+              2016-11-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/26/Tomcat源码：Bootstrap启动流程/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/26/Tomcat源码：Bootstrap启动流程/" class="leancloud_visitors" data-flag-title="Tomcat源码：Bootstrap启动流程">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>1,897 字</span>
+                &nbsp; | &nbsp;
+                <span>9 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Tomcat的启动流程从整体上来说并不算复杂，启动的入口就是从Bootstrap类的main方法开始的，这篇文章就让我们来看一下Bootstrap这个类都干了些什么。</p>
+<h2 id="Bootstrap类中的变量"><a href="#Bootstrap类中的变量" class="headerlink" title="Bootstrap类中的变量"></a>Bootstrap类中的变量</h2><p>首先看下Bootstrap都定义了哪些变量</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Bootstrap类的引用</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> Bootstrap daemon = <span class="keyword">null</span>;</div><div class="line"></div><div class="line"><span class="comment">// 这两个路径一般都是tomcat的根目录，即webapp的父目录</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> File catalinaBaseFile;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> File catalinaHomeFile;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Pattern PATH_PATTERN = Pattern.compile(<span class="string">"(\".*?\")|(([^,])*)"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 这个其实就是`org.apache.catalina.startup.Catalina`对象，它是真正负责启动server的对象</span></div><div class="line"><span class="keyword">private</span> Object catalinaDaemon = <span class="keyword">null</span>;</div><div class="line"></div><div class="line"><span class="comment">// tomcat涉及到的类加载器</span></div><div class="line">ClassLoader commonLoader = <span class="keyword">null</span>;</div><div class="line">ClassLoader catalinaLoader = <span class="keyword">null</span>;</div><div class="line">ClassLoader sharedLoader = <span class="keyword">null</span>;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="Tomcat的类加载器"><a href="#Tomcat的类加载器" class="headerlink" title="Tomcat的类加载器"></a>Tomcat的类加载器</h2><p>首先看下JVM的类加载器的结构：</p>
+<img src="/2016/11/26/Tomcat源码：Bootstrap启动流程/jvm-class-loader.png" alt="jvm-class-loader.png" title="">
+<ul>
+<li>Bootstrap：引导类加载器，负责加载<code>rt.jar</code></li>
+<li>Extension：扩展类加载器，负责加载<code>jre/lib/ext</code>中的jar</li>
+<li>System：系统类加载器，负责加载指定classpath中的jar</li>
+</ul>
+<p>下面来看一下tomcat的类加载器的结构：</p>
+<img src="/2016/11/26/Tomcat源码：Bootstrap启动流程/tomcat-class-loader.png" alt="tomcat-class-loader.png" title="">
+<ul>
+<li>Bootstrap：负责加载JVM启动时所需要的类以及<code>$JAVA_HOME/jre/lib/ext</code>目录中的类。相当于Java类加载器的Bootstrap和Extension。</li>
+<li>System：负责加载<code>$CATALINA_HOME/bin</code>目录下的类，比如<code>bootstrap.jar</code></li>
+<li>Common：负责加载tomcat使用以及应用通用的一些类，位于<code>$CATALINA_HOME/lib</code>或<code>$CATALINA_BASE/lib</code>下的jar，比如<code>servlet-api.jar</code></li>
+<li>WebappX：每个应用在部署后，都会创建一个唯一的类加载器。该类加载器会加载位于该应用下的<code>WEB-INF/lib</code>中的jar文件和<code>WEB-INF/classes</code>中的class文件</li>
+</ul>
+<p>在tomcat中，如果要加载一个类，那么他的加载顺序为：</p>
+<ol>
+<li><p>使用bootstrap引导类加载器加载</p>
+</li>
+<li><p>使用system系统类加载器加载</p>
+</li>
+<li><p>使用应用类加载器在<code>WEB-INF/classes</code>中加载</p>
+</li>
+<li><p>使用应用类加载器在<code>WEB-INF/lib</code>中加载</p>
+</li>
+<li><p>使用common类加载器在<code>$CATALINA_HOME/lib</code>或<code>$CATALINA_BASE/lib</code>中加载</p>
+</li>
+</ol>
+<p>参考：<a href="http://tomcat.apache.org/tomcat-8.5-doc/class-loader-howto.html" target="_blank" rel="external">tomcat-8.5-doc</a></p>
+<h2 id="static代码块"><a href="#static代码块" class="headerlink" title="static代码块"></a>static代码块</h2><p>在static代码块中，主要是对一些路径进行初始化。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> &#123;</div><div class="line">    <span class="comment">//当前tomcat的路径，其实就是tomcat所在的目录的路径</span></div><div class="line">    <span class="comment">// Will always be non-null</span></div><div class="line">    String userDir = System.getProperty(<span class="string">"user.dir"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 该路径是设置的catalina.home指定的路径</span></div><div class="line">    <span class="comment">// Home first</span></div><div class="line">    String home = System.getProperty(Globals.CATALINA_HOME_PROP);</div><div class="line">    File homeFile = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (home != <span class="keyword">null</span>) &#123;</div><div class="line">        File f = <span class="keyword">new</span> File(home);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            homeFile = f.getCanonicalFile();</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</div><div class="line">            homeFile = f.getAbsoluteFile();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (homeFile == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// First fall-back. See if current directory is a bin directory</span></div><div class="line">        <span class="comment">// in a normal Tomcat install</span></div><div class="line">        File bootstrapJar = <span class="keyword">new</span> File(userDir, <span class="string">"bootstrap.jar"</span>);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (bootstrapJar.exists()) &#123;</div><div class="line">            File f = <span class="keyword">new</span> File(userDir, <span class="string">".."</span>);</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                homeFile = f.getCanonicalFile();</div><div class="line">            &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</div><div class="line">                homeFile = f.getAbsoluteFile();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (homeFile == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// Second fall-back. Use current directory</span></div><div class="line">        File f = <span class="keyword">new</span> File(userDir);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            homeFile = f.getCanonicalFile();</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</div><div class="line">            homeFile = f.getAbsoluteFile();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    catalinaHomeFile = homeFile;</div><div class="line">    System.setProperty(</div><div class="line">            Globals.CATALINA_HOME_PROP, catalinaHomeFile.getPath());</div><div class="line"></div><div class="line">    <span class="comment">// Then base</span></div><div class="line">    String base = System.getProperty(Globals.CATALINA_BASE_PROP);</div><div class="line">    </div><div class="line">    <span class="comment">// 可见，如果没有设置base路径，默认就是catalina.home指定的路径</span></div><div class="line">    <span class="keyword">if</span> (base == <span class="keyword">null</span>) &#123;</div><div class="line">        catalinaBaseFile = catalinaHomeFile;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        File baseFile = <span class="keyword">new</span> File(base);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            baseFile = baseFile.getCanonicalFile();</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</div><div class="line">            baseFile = baseFile.getAbsoluteFile();</div><div class="line">        &#125;</div><div class="line">        catalinaBaseFile = baseFile;</div><div class="line">    &#125;</div><div class="line">    System.setProperty(</div><div class="line">            Globals.CATALINA_BASE_PROP, catalinaBaseFile.getPath());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上可见，主要是设置了一些运行时所需要的路径，例如要设置catalina.home，如果你要运行tomcat源码的话，可以在启动选项的VM options中设置<code>-Dcatalina.home=&quot;/Users/sangjian/dev/source-files/apache-tomcat-8.5.4-src/output/build&quot;</code>来指定。例如：</p>
+<img src="/2016/11/26/Tomcat源码：Bootstrap启动流程/B2439EFA-6276-425A-A807-C66B975E59F6.png" alt="B2439EFA-6276-425A-A807-C66B975E59F6.png" title="">
+<h2 id="main方法"><a href="#main方法" class="headerlink" title="main方法"></a>main方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Main method and entry point when starting Tomcat via the provided</div><div class="line"> * scripts.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> args Command line arguments to be processed</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (daemon == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">//创建Bootstarp类型的对象  </span></div><div class="line">        <span class="comment">// Don't set daemon until init() has completed</span></div><div class="line">        Bootstrap bootstrap = <span class="keyword">new</span> Bootstrap();</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            bootstrap.init();</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">            handleThrowable(t);</div><div class="line">            t.printStackTrace();</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        daemon = bootstrap;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// When running as a service the call to stop will be on a new</span></div><div class="line">        <span class="comment">// thread so make sure the correct class loader is used to prevent</span></div><div class="line">        <span class="comment">// a range of class not found exceptions.</span></div><div class="line">        Thread.currentThread().setContextClassLoader(daemon.catalinaLoader);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        String command = <span class="string">"start"</span>;</div><div class="line">        <span class="keyword">if</span> (args.length &gt; <span class="number">0</span>) &#123;</div><div class="line">            command = args[args.length - <span class="number">1</span>];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (command.equals(<span class="string">"startd"</span>)) &#123;</div><div class="line">            args[args.length - <span class="number">1</span>] = <span class="string">"start"</span>;</div><div class="line">            daemon.load(args);</div><div class="line">            daemon.start();</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (command.equals(<span class="string">"stopd"</span>)) &#123;</div><div class="line">            args[args.length - <span class="number">1</span>] = <span class="string">"stop"</span>;</div><div class="line">            daemon.stop();</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (command.equals(<span class="string">"start"</span>)) &#123;</div><div class="line">            daemon.setAwait(<span class="keyword">true</span>);</div><div class="line">            daemon.load(args);</div><div class="line">            daemon.start();</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (command.equals(<span class="string">"stop"</span>)) &#123;</div><div class="line">            daemon.stopServer(args);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (command.equals(<span class="string">"configtest"</span>)) &#123;</div><div class="line">            daemon.load(args);</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span>==daemon.getServer()) &#123;</div><div class="line">                System.exit(<span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">            System.exit(<span class="number">0</span>);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            log.warn(<span class="string">"Bootstrap: command \""</span> + command + <span class="string">"\" does not exist."</span>);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">        <span class="comment">// Unwrap the Exception for clearer error reporting</span></div><div class="line">        <span class="keyword">if</span> (t <span class="keyword">instanceof</span> InvocationTargetException &amp;&amp;</div><div class="line">                t.getCause() != <span class="keyword">null</span>) &#123;</div><div class="line">            t = t.getCause();</div><div class="line">        &#125;</div><div class="line">        handleThrowable(t);</div><div class="line">        t.printStackTrace();</div><div class="line">        System.exit(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实整个流程很简单，总结如下：</p>
+<ol>
+<li>创建一个自身对象并调用<code>init</code>方法初始化，赋值给daemon</li>
+<li>判断参数，默认是start</li>
+<li>执行<code>daemon.load</code>方法，判断参数类型，反射调用<code>org.apache.catalina.startup.Catalina</code>对象的<code>load</code>方法</li>
+<li>执行<code>daemon.start</code>方法，反射调用<code>org.apache.catalina.startup.Catalina</code>对象的<code>start</code>方法</li>
+</ol>
+<h2 id="init方法"><a href="#init方法" class="headerlink" title="init方法"></a>init方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Initialize daemon.</div><div class="line"> * <span class="doctag">@throws</span> Exception Fatal initialization error</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    </div><div class="line">    <span class="comment">// 初始化类加载器</span></div><div class="line">    initClassLoaders();</div><div class="line"></div><div class="line">    <span class="comment">// 设置当前线程的类加载器</span></div><div class="line">    Thread.currentThread().setContextClassLoader(catalinaLoader);</div><div class="line"></div><div class="line">    SecurityClassLoad.securityClassLoad(catalinaLoader);</div><div class="line"></div><div class="line">    <span class="comment">// Load our startup class and call its process() method</span></div><div class="line">    <span class="keyword">if</span> (log.isDebugEnabled())</div><div class="line">        log.debug(<span class="string">"Loading startup class"</span>);</div><div class="line">    Class&lt;?&gt; startupClass =</div><div class="line">        catalinaLoader.loadClass</div><div class="line">        (<span class="string">"org.apache.catalina.startup.Catalina"</span>);</div><div class="line">    Object startupInstance = startupClass.newInstance();</div><div class="line"></div><div class="line">    <span class="comment">// Set the shared extensions class loader</span></div><div class="line">    <span class="keyword">if</span> (log.isDebugEnabled())</div><div class="line">        log.debug(<span class="string">"Setting startup class properties"</span>);</div><div class="line">    String methodName = <span class="string">"setParentClassLoader"</span>;</div><div class="line">    Class&lt;?&gt; paramTypes[] = <span class="keyword">new</span> Class[<span class="number">1</span>];</div><div class="line">    paramTypes[<span class="number">0</span>] = Class.forName(<span class="string">"java.lang.ClassLoader"</span>);</div><div class="line">    Object paramValues[] = <span class="keyword">new</span> Object[<span class="number">1</span>];</div><div class="line">    </div><div class="line">    <span class="comment">/* </span></div><div class="line">     * sharedLoader为加载$CATALINA_HOME/lib目录的类加载器</div><div class="line">     * 其实在Tomcat5之后，并取消了catalinaLoader和sharedLoader，而默认只设置了commonLoader</div><div class="line">     * 在默认配置的情况下，这里使用sharedLoader的来加载class时，还是会通过commonLoader来加载</div><div class="line">     * 因为sharedLoader的parentClassLoader是catalinaLoader，catalinaLoder的parentClassLoader是commonLoader</div><div class="line">     * 但在这里，这3个加载器都是commonLoader这个对象，这个稍后会说到</div><div class="line">     */</div><div class="line">    paramValues[<span class="number">0</span>] = sharedLoader;</div><div class="line">    Method method =</div><div class="line">        startupInstance.getClass().getMethod(methodName, paramTypes);</div><div class="line">    </div><div class="line">    <span class="comment">// 设置org.apache.catalina.startup.Catalina对象的parentClassloader</span></div><div class="line">    method.invoke(startupInstance, paramValues);</div><div class="line"></div><div class="line">    catalinaDaemon = startupInstance;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>init方法主要做了以下几件事：</p>
+<ol>
+<li>初始化类加载器</li>
+<li>设置当前线程的类加载器</li>
+<li>创建<code>org.apache.catalina.startup.Catalina</code>对象<code>startupInstance</code></li>
+<li>反射调用<code>org.apache.catalina.startup.Catalina</code>对象的<code>setParentClassLoader</code>方法，设置父加载器为<code>sharedLoader</code></li>
+<li>将<code>startupInstance</code>赋值给<code>catalinaDaemon</code></li>
+</ol>
+<h2 id="initClassLoaders和createClassLoader方法"><a href="#initClassLoaders和createClassLoader方法" class="headerlink" title="initClassLoaders和createClassLoader方法"></a>initClassLoaders和createClassLoader方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initClassLoaders</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        commonLoader = createClassLoader(<span class="string">"common"</span>, <span class="keyword">null</span>);</div><div class="line">        <span class="keyword">if</span>( commonLoader == <span class="keyword">null</span> ) &#123;</div><div class="line">            <span class="comment">// no config file, default to this loader - we might be in a 'single' env.</span></div><div class="line">            commonLoader=<span class="keyword">this</span>.getClass().getClassLoader();</div><div class="line">        &#125;</div><div class="line">        catalinaLoader = createClassLoader(<span class="string">"server"</span>, commonLoader);</div><div class="line">        sharedLoader = createClassLoader(<span class="string">"shared"</span>, commonLoader);</div><div class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">        handleThrowable(t);</div><div class="line">        log.error(<span class="string">"Class loader creation threw exception"</span>, t);</div><div class="line">        System.exit(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> ClassLoader <span class="title">createClassLoader</span><span class="params">(String name, ClassLoader parent)</span></span></div><div class="line">    <span class="keyword">throws</span> Exception &#123;</div><div class="line"></div><div class="line">    String value = CatalinaProperties.getProperty(name + <span class="string">".loader"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 如果catalina.properties文件中没有值，则返回parent</span></div><div class="line">    <span class="keyword">if</span> ((value == <span class="keyword">null</span>) || (value.equals(<span class="string">""</span>)))</div><div class="line">        <span class="keyword">return</span> parent;</div><div class="line"></div><div class="line">    value = replace(value);</div><div class="line"></div><div class="line">    List&lt;Repository&gt; repositories = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">    String[] repositoryPaths = getPaths(value);</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (String repository : repositoryPaths) &#123;</div><div class="line">        <span class="comment">// Check for a JAR URL repository</span></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">            URL url = <span class="keyword">new</span> URL(repository);</div><div class="line">            repositories.add(</div><div class="line">                    <span class="keyword">new</span> Repository(repository, RepositoryType.URL));</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125; <span class="keyword">catch</span> (MalformedURLException e) &#123;</div><div class="line">            <span class="comment">// Ignore</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// Local repository</span></div><div class="line">        <span class="keyword">if</span> (repository.endsWith(<span class="string">"*.jar"</span>)) &#123;</div><div class="line">            repository = repository.substring</div><div class="line">                (<span class="number">0</span>, repository.length() - <span class="string">"*.jar"</span>.length());</div><div class="line">            repositories.add(</div><div class="line">                    <span class="keyword">new</span> Repository(repository, RepositoryType.GLOB));</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (repository.endsWith(<span class="string">".jar"</span>)) &#123;</div><div class="line">            repositories.add(</div><div class="line">                    <span class="keyword">new</span> Repository(repository, RepositoryType.JAR));</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            repositories.add(</div><div class="line">                    <span class="keyword">new</span> Repository(repository, RepositoryType.DIR));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> ClassLoaderFactory.createClassLoader(repositories, parent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>基于之前介绍的tomcat的类加载器，这两个方法应该比较好理解了，这里需要注意的是，在Tomcat5之后，Tomcat的类加载器发生了变化，默认是没有catalinaLoader和sharedLoader的路径了，这个可以通过查看<code>catalina.properties</code>文件来说明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">common.loader=&quot;$&#123;catalina.base&#125;/lib&quot;,&quot;$&#123;catalina.base&#125;/lib/*.jar&quot;,&quot;$&#123;catalina.home&#125;/lib&quot;,&quot;$&#123;catalina.home&#125;/lib/*.jar&quot;</div><div class="line"></div><div class="line">server.loader=</div><div class="line"></div><div class="line">shared.loader=</div></pre></td></tr></table></figure>
+<p>可见，默认只设置了commonLoader。从<code>createClassLoader</code>方法可以看出，后两个loader的值是空的，所以commonLoader,catalinaLoader和sharedLoader都是同一个对象。</p>
+<h2 id="load方法"><a href="#load方法" class="headerlink" title="load方法"></a>load方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Load daemon.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">load</span><span class="params">(String[] arguments)</span></span></div><div class="line">    <span class="keyword">throws</span> Exception &#123;</div><div class="line"></div><div class="line">    <span class="comment">// Call the load() method</span></div><div class="line">    String methodName = <span class="string">"load"</span>;</div><div class="line">    Object param[];</div><div class="line">    Class&lt;?&gt; paramTypes[];</div><div class="line">    <span class="keyword">if</span> (arguments==<span class="keyword">null</span> || arguments.length==<span class="number">0</span>) &#123;</div><div class="line">        paramTypes = <span class="keyword">null</span>;</div><div class="line">        param = <span class="keyword">null</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        paramTypes = <span class="keyword">new</span> Class[<span class="number">1</span>];</div><div class="line">        paramTypes[<span class="number">0</span>] = arguments.getClass();</div><div class="line">        param = <span class="keyword">new</span> Object[<span class="number">1</span>];</div><div class="line">        param[<span class="number">0</span>] = arguments;</div><div class="line">    &#125;</div><div class="line">    Method method =</div><div class="line">        catalinaDaemon.getClass().getMethod(methodName, paramTypes);</div><div class="line">    <span class="keyword">if</span> (log.isDebugEnabled())</div><div class="line">        log.debug(<span class="string">"Calling startup class "</span> + method);</div><div class="line">    method.invoke(catalinaDaemon, param);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这不用多说了吧，还是调用<code>org.apache.catalina.startup.Catalina</code>对象的<code>load</code>方法。</p>
+<h2 id="start方法"><a href="#start方法" class="headerlink" title="start方法"></a>start方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Start the Catalina daemon.</div><div class="line"> * <span class="doctag">@throws</span> Exception Fatal start error</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span></div><div class="line">    <span class="keyword">throws</span> Exception &#123;</div><div class="line">    <span class="keyword">if</span>( catalinaDaemon==<span class="keyword">null</span> ) init();</div><div class="line"></div><div class="line">    Method method = catalinaDaemon.getClass().getMethod(<span class="string">"start"</span>, (Class [] )<span class="keyword">null</span>);</div><div class="line">    method.invoke(catalinaDaemon, (Object [])<span class="keyword">null</span>);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>更简单是不是？</p>
+<p>以上就是Bootstrap类的工作，接下来就是Catalina需要做的事了，所以从这个流程来看，Bootstrap所做的工作还是很简单的。关于Catalina的分析下一篇文章继续吧。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Tomcat/" rel="tag">#Tomcat</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/25/test/" rel="next" title="test">
+                <i class="fa fa-chevron-left"></i> test
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/27/Tomcat源码：Catalina启动流程/" rel="prev" title="Tomcat源码：Catalina启动流程">
+                Tomcat源码：Catalina启动流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/26/Tomcat源码：Bootstrap启动流程/"
+           data-title="Tomcat源码：Bootstrap启动流程" data-url="http://www.ideabuffer.cn/2016/11/26/Tomcat源码：Bootstrap启动流程/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Neo" />
+          <p class="site-author-name" itemprop="name">Neo</p>
+          <p class="site-description motion-element" itemprop="description">More Articles,More Ideas</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bootstrap类中的变量"><span class="nav-number">1.</span> <span class="nav-text">Bootstrap类中的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tomcat的类加载器"><span class="nav-number">2.</span> <span class="nav-text">Tomcat的类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#static代码块"><span class="nav-number">3.</span> <span class="nav-text">static代码块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#main方法"><span class="nav-number">4.</span> <span class="nav-text">main方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init方法"><span class="nav-number">5.</span> <span class="nav-text">init方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#initClassLoaders和createClassLoader方法"><span class="nav-number">6.</span> <span class="nav-text">initClassLoaders和createClassLoader方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#load方法"><span class="nav-number">7.</span> <span class="nav-text">load方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#start方法"><span class="nav-number">8.</span> <span class="nav-text">start方法</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Neo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sangjian"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="//cdn.bootcss.com/UAParser.js/0.7.9/ua-parser.min.js"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("mI3fROQj8loMvwBe0hQWTgLD-gzGzoHsz", "MyNIlLz7uUKSexkXWgeWFVKp");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
