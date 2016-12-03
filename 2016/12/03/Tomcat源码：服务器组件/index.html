@@ -1,0 +1,955 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tomcat," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Idea Buffer" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Server接口org.apache.catalina.Server接口定义了Tomcat的服务器组件，该接口的实例代表了整个servlet引擎，包括了所有的组件。Tomcat的服务器组件非常重要，因为它可以很优雅的来启动或关闭整个系统，不需要对连接器和容器单独进行启动和关闭。
+下面来介绍一下启动和关闭的工作原理。
+从之前的文章Tomcat源码：Bootstrap启动流程和Tomcat源码：Cat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tomcat源码：服务器组件">
+<meta property="og:url" content="http://www.ideabuffer.cn/2016/12/03/Tomcat源码：服务器组件/index.html">
+<meta property="og:site_name" content="Idea Buffer">
+<meta property="og:description" content="Server接口org.apache.catalina.Server接口定义了Tomcat的服务器组件，该接口的实例代表了整个servlet引擎，包括了所有的组件。Tomcat的服务器组件非常重要，因为它可以很优雅的来启动或关闭整个系统，不需要对连接器和容器单独进行启动和关闭。
+下面来介绍一下启动和关闭的工作原理。
+从之前的文章Tomcat源码：Bootstrap启动流程和Tomcat源码：Cat">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/12/03/Tomcat源码：服务器组件/屏幕快照%202016-12-04%20上午12.34.30.png">
+<meta property="og:updated_time" content="2016-12-03T17:31:19.775Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tomcat源码：服务器组件">
+<meta name="twitter:description" content="Server接口org.apache.catalina.Server接口定义了Tomcat的服务器组件，该接口的实例代表了整个servlet引擎，包括了所有的组件。Tomcat的服务器组件非常重要，因为它可以很优雅的来启动或关闭整个系统，不需要对连接器和容器单独进行启动和关闭。
+下面来介绍一下启动和关闭的工作原理。
+从之前的文章Tomcat源码：Bootstrap启动流程和Tomcat源码：Cat">
+<meta name="twitter:image" content="http://www.ideabuffer.cn/2016/12/03/Tomcat源码：服务器组件/屏幕快照%202016-12-04%20上午12.34.30.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6319057304863901000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Tomcat源码：服务器组件 | Idea Buffer </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9ad13c2f9edb81550c28aff1e84a4e06";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Idea Buffer</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">桑健的博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Tomcat源码：服务器组件
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-03T22:48:55+08:00" content="2016-12-03">
+              2016-12-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/12/03/Tomcat源码：服务器组件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/03/Tomcat源码：服务器组件/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/03/Tomcat源码：服务器组件/" class="leancloud_visitors" data-flag-title="Tomcat源码：服务器组件">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>1,552 字</span>
+                &nbsp; | &nbsp;
+                <span>6 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Server接口"><a href="#Server接口" class="headerlink" title="Server接口"></a>Server接口</h2><p><code>org.apache.catalina.Server</code>接口定义了Tomcat的服务器组件，该接口的实例代表了整个servlet引擎，包括了所有的组件。Tomcat的服务器组件非常重要，因为它可以很优雅的来启动或关闭整个系统，不需要对连接器和容器单独进行启动和关闭。</p>
+<p>下面来介绍一下启动和关闭的工作原理。</p>
+<p>从之前的文章<a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/">Tomcat源码：Bootstrap启动流程</a>和<a href="/2016/11/27/Tomcat源码：Catalina启动流程/">Tomcat源码：Catalina启动流程</a>可以了解到，当Tomcat启动的时候，会调用<code>Catalina</code>的<code>setAwait(true)</code>方法，将<code>await</code>变量设置为<code>true</code>，然后调用<code>start</code>方法启动Tomcat，看下<code>Catalina</code>中的<code>start</code>方法的最后几行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (await) &#123;</div><div class="line">    await();</div><div class="line">    stop();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>回顾一下上篇<a href="/2016/11/27/Tomcat源码：Catalina启动流程/">Tomcat源码：Catalina启动流程</a>中提到的<code>await</code>方法的作用：</p>
+<ul>
+<li>判断当前启动的Server所要绑定的端口是否被占用</li>
+<li>监听Server的端口，会一直等待接收关闭命令</li>
+</ul>
+<p>如果要关闭Tomcat，就可以向Server指定的端口发送一个关闭命令（默认是<em>SHUTDOWN</em>），接收到关闭命令后就会关闭所有的组件。</p>
+<p>下面给出Server接口的定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Server</span> <span class="keyword">extends</span> <span class="title">Lifecycle</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> NamingResourcesImpl <span class="title">getGlobalNamingResources</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setGlobalNamingResources</span><span class="params">(NamingResourcesImpl globalNamingResources)</span></span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> javax.naming.<span class="function">Context <span class="title">getGlobalNamingContext</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPort</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPort</span><span class="params">(<span class="keyword">int</span> port)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAddress</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAddress</span><span class="params">(String address)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getShutdown</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setShutdown</span><span class="params">(String shutdown)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> ClassLoader <span class="title">getParentClassLoader</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setParentClassLoader</span><span class="params">(ClassLoader parent)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Catalina <span class="title">getCatalina</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCatalina</span><span class="params">(Catalina catalina)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> File <span class="title">getCatalinaBase</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCatalinaBase</span><span class="params">(File catalinaBase)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> File <span class="title">getCatalinaHome</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCatalinaHome</span><span class="params">(File catalinaHome)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addService</span><span class="params">(Service service)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">await</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Service <span class="title">findService</span><span class="params">(String name)</span></span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> Service[] findServices();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeService</span><span class="params">(Service service)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getNamingToken</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，<code>setShutdown</code>方法用于设置Server的关闭命令，<code>setPort</code>方法用于设置Server的端口，用于接收关闭命令，<code>addService</code>方法用于添加服务组件，<code>removeService</code>方法用来删除服务组件，<code>findServices</code>方法用来添加到该服务器组件的所有服务组件，以及刚才提到的<code>await</code>方法。</p>
+<h2 id="StandardServer类"><a href="#StandardServer类" class="headerlink" title="StandardServer类"></a>StandardServer类</h2><p><code>org.apache.catalina.core.StandardServer</code>类是<code>Server</code>接口的标准实现。从Server接口的定义可以看出，一个服务器组件可以有多个服务组件，当然，由于<code>StandardServer</code>继承了<code>LifecycleBase</code>，也就是实现了<code>LifeCycle</code>接口，所以StandardServer类中有4个与生命周期有关的方法，分别是<code>initInternal()</code>方法、<code>startInternal()</code>方法、<code>stopInternal()</code>和<code>destroyInternal()</code>方法。</p>
+<p>说明一下，上面4个方法对应于<code>Lifecycle</code>接口中定义的<code>init()</code>方法、<code>start()</code>方法、<code>stop()</code>方法和<code>destroy()</code>方法，这4个方法已经被<code>LifecycleBase</code>实现，而<code>LifecycleBase</code>是一个抽象类，以<code>initInternal()</code>方法为例，该方法是一个抽象方法，StandardServer实现了该方法，相当于一个钩子方法，如果你了解了设计模式中的模板模式，这个应该就好理解了，看下<code>LifecycleBase</code>中的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!state.equals(LifecycleState.NEW)) &#123;</div><div class="line">        invalidTransition(Lifecycle.BEFORE_INIT_EVENT);</div><div class="line">    &#125;</div><div class="line">    setStateInternal(LifecycleState.INITIALIZING, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        initInternal();</div><div class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">        ExceptionUtils.handleThrowable(t);</div><div class="line">        setStateInternal(LifecycleState.FAILED, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> LifecycleException(</div><div class="line">                sm.getString(<span class="string">"lifecycleBase.initFail"</span>,toString()), t);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    setStateInternal(LifecycleState.INITIALIZED, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">initInternal</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException</span>;</div></pre></td></tr></table></figure>
+<p>这下应该很明白了吧。类似的还有<code>start()</code>方法和<code>stop()</code>方法。</p>
+<p>有关生命周期我以后会单独写一篇文章，这里就不过多介绍了。</p>
+<p>看一下服务器组件的类图：</p>
+<img src="/2016/12/03/Tomcat源码：服务器组件/屏幕快照%202016-12-04%20上午12.34.30.png" alt="屏幕快照 2016-12-04 上午12.34.30.png" title="">
+<h3 id="initInternal方法"><a href="#initInternal方法" class="headerlink" title="initInternal方法"></a>initInternal方法</h3><p>该方法代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initInternal</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">super</span>.initInternal();</div><div class="line"></div><div class="line">    <span class="comment">// Register global String cache</span></div><div class="line">    <span class="comment">// Note although the cache is global, if there are multiple Servers</span></div><div class="line">    <span class="comment">// present in the JVM (may happen when embedding) then the same cache</span></div><div class="line">    <span class="comment">// will be registered under multiple names</span></div><div class="line">    onameStringCache = register(<span class="keyword">new</span> StringCache(), <span class="string">"type=StringCache"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// Register the MBeanFactory</span></div><div class="line">    MBeanFactory factory = <span class="keyword">new</span> MBeanFactory();</div><div class="line">    factory.setContainer(<span class="keyword">this</span>);</div><div class="line">    onameMBeanFactory = register(factory, <span class="string">"type=MBeanFactory"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// Register the naming resources</span></div><div class="line">    globalNamingResources.init();</div><div class="line"></div><div class="line">    <span class="comment">// Populate the extension validator with JARs from common and shared</span></div><div class="line">    <span class="comment">// class loaders</span></div><div class="line">    <span class="keyword">if</span> (getCatalina() != <span class="keyword">null</span>) &#123;</div><div class="line">        ClassLoader cl = getCatalina().getParentClassLoader();</div><div class="line">        <span class="comment">// Walk the class loader hierarchy. Stop at the system class loader.</span></div><div class="line">        <span class="comment">// This will add the shared (if present) and common class loaders</span></div><div class="line">        <span class="keyword">while</span> (cl != <span class="keyword">null</span> &amp;&amp; cl != ClassLoader.getSystemClassLoader()) &#123;</div><div class="line">            <span class="keyword">if</span> (cl <span class="keyword">instanceof</span> URLClassLoader) &#123;</div><div class="line">                URL[] urls = ((URLClassLoader) cl).getURLs();</div><div class="line">                <span class="keyword">for</span> (URL url : urls) &#123;</div><div class="line">                    <span class="keyword">if</span> (url.getProtocol().equals(<span class="string">"file"</span>)) &#123;</div><div class="line">                        <span class="keyword">try</span> &#123;</div><div class="line">                            File f = <span class="keyword">new</span> File (url.toURI());</div><div class="line">                            <span class="keyword">if</span> (f.isFile() &amp;&amp;</div><div class="line">                                    f.getName().endsWith(<span class="string">".jar"</span>)) &#123;</div><div class="line">                                ExtensionValidator.addSystemResource(f);</div><div class="line">                            &#125;</div><div class="line">                        &#125; <span class="keyword">catch</span> (URISyntaxException e) &#123;</div><div class="line">                            <span class="comment">// Ignore</span></div><div class="line">                        &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                            <span class="comment">// Ignore</span></div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            cl = cl.getParent();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// Initialize our defined Services</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; services.length; i++) &#123;</div><div class="line">        services[i].init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>前面是JNDI和一些MBean的操作以及对扩展依赖项的验证，最后是初始化服务组件。</p>
+<p>服务组件<code>services</code>怎么来的？回顾一下<a href="/2016/11/27/Tomcat源码：Catalina启动流程/#createStartDigester方法">Tomcat源码：Catalina启动流程</a>中的<code>createStartDigester</code>方法，想想也就可以知道，肯定是通过解析<code>server.xml</code>文件得到的。</p>
+<h3 id="startInternal方法"><a href="#startInternal方法" class="headerlink" title="startInternal方法"></a>startInternal方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">startInternal</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException </span>&#123;</div><div class="line"></div><div class="line">    fireLifecycleEvent(CONFIGURE_START_EVENT, <span class="keyword">null</span>);</div><div class="line">    setState(LifecycleState.STARTING);</div><div class="line"></div><div class="line">    globalNamingResources.start();</div><div class="line"></div><div class="line">    <span class="comment">// Start our defined Services</span></div><div class="line">    <span class="keyword">synchronized</span> (servicesLock) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; services.length; i++) &#123;</div><div class="line">            services[i].start();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>非常简单，首先是对全局JNDI的资源的启动，然后是对服务组件的启动。</p>
+<p>介绍到这里，其实<code>stopInternal()</code>方法和<code>destroyInternal()</code>方法与这两种方法类似，无非就是调用服务组件的<code>stop()</code>方法和<code>destroy()</code>方法。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从上面的分析可以看出，StandardServer作为一个标准的服务器组件，它的主要工作是对服务组件的初始化、启动、关闭和销毁，功能比较简单，同时也可以看出，它使用一种优雅的方式来对服务组件进行启动和关闭的操作，没有对连接器和容器进行单独操作。</p>
+<p>服务器组件实现了<code>Lifecycle</code>接口，生命周期在整个Tomcat中具有非常重要的作用，可以用它来管理不同层级的组件，Tomcat在设计上允许一个组件包含其他组件，例如本文中介绍的服务器组件，它包含了服务组件，再例如，服务组件包含了连接器和容器，容器中又可以包含类加载器和管理器等等。</p>
+<p>父组件可以启动或关闭子组件，正式这种设计使得Tomcat在启动时只需要启动一个组件就可以将全部的组件都启动起来，这就是单一启动/关闭机制，而实现这一机制就是通过实现<code>Lifecycle</code>接口来完成的。</p>
+<p>不多说了，好像有点跑题了。。。但要弄清楚服务器组件的工作流程必然要提及到<code>Lifecycle</code>，通过本篇文章的介绍，相信大家已经对服务器组件的工作有了一定了解，后续会继续分析服务组件以及详细介绍一下生命周期，先到这里吧。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Tomcat/" rel="tag">#Tomcat</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/02/Java7中的try-with-resources/" rel="next" title="Java7 中的try-with-resources">
+                <i class="fa fa-chevron-left"></i> Java7 中的try-with-resources
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/03/Tomcat源码：服务器组件/"
+           data-title="Tomcat源码：服务器组件" data-url="http://www.ideabuffer.cn/2016/12/03/Tomcat源码：服务器组件/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Neo" />
+          <p class="site-author-name" itemprop="name">Neo</p>
+          <p class="site-description motion-element" itemprop="description">More Articles,More Ideas</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Server接口"><span class="nav-number">1.</span> <span class="nav-text">Server接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StandardServer类"><span class="nav-number">2.</span> <span class="nav-text">StandardServer类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#initInternal方法"><span class="nav-number">2.1.</span> <span class="nav-text">initInternal方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#startInternal方法"><span class="nav-number">2.2.</span> <span class="nav-text">startInternal方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Neo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sangjian"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="//cdn.bootcss.com/UAParser.js/0.7.9/ua-parser.min.js"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("mI3fROQj8loMvwBe0hQWTgLD-gzGzoHsz", "MyNIlLz7uUKSexkXWgeWFVKp");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

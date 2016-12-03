@@ -281,6 +281,148 @@
             
               
                 
+                <a class="post-title-link" href="/2016/12/03/Tomcat源码：服务器组件/" itemprop="url">
+                  Tomcat源码：服务器组件
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-03T22:48:55+08:00" content="2016-12-03">
+              2016-12-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/12/03/Tomcat源码：服务器组件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/03/Tomcat源码：服务器组件/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/03/Tomcat源码：服务器组件/" class="leancloud_visitors" data-flag-title="Tomcat源码：服务器组件">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>1,552 字</span>
+                &nbsp; | &nbsp;
+                <span>6 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="Server接口"><a href="#Server接口" class="headerlink" title="Server接口"></a>Server接口</h2><p><code>org.apache.catalina.Server</code>接口定义了Tomcat的服务器组件，该接口的实例代表了整个servlet引擎，包括了所有的组件。Tomcat的服务器组件非常重要，因为它可以很优雅的来启动或关闭整个系统，不需要对连接器和容器单独进行启动和关闭。</p>
+<p>下面来介绍一下启动和关闭的工作原理。</p>
+<p>从之前的文章<a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/">Tomcat源码：Bootstrap启动流程</a>和<a href="/2016/11/27/Tomcat源码：Catalina启动流程/">Tomcat源码：Catalina启动流程</a>可以了解到，当Tomcat启动的时候，会调用<code>Catalina</code>的<code>setAwait(true)</code>方法，将<code>await</code>变量设置为<code>true</code>，然后调用<code>start</code>方法启动Tomcat，看下<code>Catalina</code>中的<code>start</code>方法的最后几行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (await) &#123;</div><div class="line">    await();</div><div class="line">    stop();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/12/03/Tomcat源码：服务器组件/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/12/02/Java7中的try-with-resources/" itemprop="url">
                   Java7 中的try-with-resources
                 </a>
@@ -492,7 +634,7 @@
           
               <span class="post-letters-count">
                 &nbsp; | &nbsp;
-                <span>2,198 字</span>
+                <span>2,246 字</span>
                 &nbsp; | &nbsp;
                 <span>11 min</span>
               </span>
@@ -756,7 +898,7 @@
           
               <span class="post-letters-count">
                 &nbsp; | &nbsp;
-                <span>16 字</span>
+                <span>13 字</span>
                 &nbsp; | &nbsp;
                 <span>0 min</span>
               </span>
@@ -1487,152 +1629,13 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/01/CentOS7服务器初步配置/" itemprop="url">
-                  CentOS7服务器初步配置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-01T00:01:31+08:00" content="2016-08-01">
-              2016-08-01
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/服务器/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/01/CentOS7服务器初步配置/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/01/CentOS7服务器初步配置/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/08/01/CentOS7服务器初步配置/" class="leancloud_visitors" data-flag-title="CentOS7服务器初步配置">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>1,035 字</span>
-                &nbsp; | &nbsp;
-                <span>4 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>在开发或者部署网站的时候，需要自己配置Linux服务器，本文以Centos7为例，记录了配置Linux服务器的初步流程</p>
-<h2 id="第一步：root用户登录"><a href="#第一步：root用户登录" class="headerlink" title="第一步：root用户登录"></a>第一步：root用户登录</h2><p>使用root用户登录远程主机（假定IP地址为192.168.1.125）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh root@192.168.1.125</div></pre></td></tr></table></figure>
-<p>这时，会出现警告，提示这是一个新的地址，存在安全风险。接收则输入yes</p>
-<img src="/2016/08/01/CentOS7服务器初步配置/-----2016-08-22---10-30-13.png" alt="-----2016-08-22---10-30-13.png" title="">
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/08/01/CentOS7服务器初步配置/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -1671,7 +1674,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
