@@ -56,6 +56,8 @@ java.net.BindException: Address already in use
 	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:495)
 ```
 
+还有一个作用就是监听Server的端口（默认是8005），会一直等待接收关闭命令，这个以后的文章会说到，这里就先不做介绍了。
+
 ## load方法
 
 `Bootstrap`类中的`load`方法会调用`Catalina`中的`load`方法，`Catalina`中的`load`代码如下：
