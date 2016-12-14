@@ -281,6 +281,688 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/" itemprop="url">
+                  Linux配置调优：最大打开文件描述符个数
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-20T01:26:38+08:00" content="2016-11-20">
+              2016-11-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/20/Linux配置调优：最大打开文件描述符个数/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/20/Linux配置调优：最大打开文件描述符个数/" class="leancloud_visitors" data-flag-title="Linux配置调优：最大打开文件描述符个数">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>2,486 字</span>
+                &nbsp; | &nbsp;
+                <span>9 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>一般情况下，Linux默认的最大文件描述符数量是1024，对于一般的程序来说1024应该是足够使用的（Nginx、系统进程等）。但是像mysql、java等单进程处理大量请求的应用来说就未必了。如果单个进程打开的文件描述符数量超过了系统定义的值，就会提到“too many files open”的错误提示。</p>
+<p>如果想查看当前进程打开了多少个文件，可以执行如下命令查看：</p>
+<p><code>lsof -n | awk &#39;{print $2}&#39; | sort | uniq -c | sort -nr | more</code></p>
+<p>执行后可以看到，第一列是打开的文件描述符数量，第二列是进程id。</p>
+<h2 id="限制级别"><a href="#限制级别" class="headerlink" title="限制级别"></a>限制级别</h2><p>最大文件描述符数的限制可以分为3种：</p>
+<ul>
+<li>shell级别的限制</li>
+<li>用户级别的限制</li>
+<li>系统级别的限制</li>
+</ul>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/11/12/Nginx配置：虚拟主机（1）/" itemprop="url">
+                  Nginx配置：虚拟主机（1）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-12T16:50:16+08:00" content="2016-11-12">
+              2016-11-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/12/Nginx配置：虚拟主机（1）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/12/Nginx配置：虚拟主机（1）/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/12/Nginx配置：虚拟主机（1）/" class="leancloud_visitors" data-flag-title="Nginx配置：虚拟主机（1）">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>853 字</span>
+                &nbsp; | &nbsp;
+                <span>3 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="什么是虚拟主机"><a href="#什么是虚拟主机" class="headerlink" title="什么是虚拟主机"></a>什么是虚拟主机</h2><p>虚拟主机使用的是特殊的软硬件技术，它把一台运行在因特网上的服务器主机分成一台台“虚拟”的主机，每<br>台虚拟主机都可以是一个独立的网站，可以具有独立的域名，具有完整的Intemet服务器功能（WWW、FTP、Email等），同一台主机上的虚拟主机之间是完全独立的。从网站访问者来看，每一台虚拟主机和一台独立的主机完全一样。</p>
+<p>利用虚拟主机，不用为每个要运行的网站提供一台单独的Nginx服务器或单独运行一组Nginx进程。虚拟主机提供了在同一台服务器、同一组Nginx进程上运行多个网站的功能。</p>
+<p>在Nginx下，一个server标签就是一个虚拟主机，有一下3种：</p>
+<ul>
+<li>基于域名的虚拟主机，通过域名来区分虚拟主机</li>
+<li>基于端口的虚拟主机，通过端口来区分虚拟主机</li>
+<li>基于IP的虚拟主机，通过IP地址来区分虚拟主机</li>
+</ul>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/11/12/Nginx配置：虚拟主机（1）/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/27/解决mysql5-6占用内存过大/" itemprop="url">
+                  解决mysql5.6占用内存过大
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-27T15:16:45+08:00" content="2016-10-27">
+              2016-10-27
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/27/解决mysql5-6占用内存过大/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/27/解决mysql5-6占用内存过大/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/27/解决mysql5-6占用内存过大/" class="leancloud_visitors" data-flag-title="解决mysql5.6占用内存过大">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>4,339 字</span>
+                &nbsp; | &nbsp;
+                <span>16 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>虚拟机的内存设置成了1G，跑了两个tomcat和rabbitmq以及redis,mysql启动失败。再次启动有时会成功，但过一会看进程又没有了。</p>
+<p>使用命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service mysqld restart</div></pre></td></tr></table></figure></p>
+<p>后提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ERROR! MySQL server PID file could not be found!</div><div class="line">Starting MySQL..................................... ERROR! The server quit without updating PID file (/opt/mysql/data/localhost.localdomain.pid).</div></pre></td></tr></table></figure></p>
+<p>查看mysql配置文件<code>/etc/my.cnf</code>，查看错误日志文件，是内存太小了的原因。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/10/27/解决mysql5-6占用内存过大/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/09/01/Tomcat-8-介绍/" itemprop="url">
+                  Tomcat 8 介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-01T21:52:06+08:00" content="2016-09-01">
+              2016-09-01
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/01/Tomcat-8-介绍/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/01/Tomcat-8-介绍/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/01/Tomcat-8-介绍/" class="leancloud_visitors" data-flag-title="Tomcat 8 介绍">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>931 字</span>
+                &nbsp; | &nbsp;
+                <span>4 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="Apache-Tomcat-版本介绍"><a href="#Apache-Tomcat-版本介绍" class="headerlink" title="Apache Tomcat 版本介绍"></a>Apache Tomcat 版本介绍</h2><p>Tomcat是一个开源的软件，其实现了Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 技术。Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 规范是在 <a href="http://www.jcp.org">Java Community Process</a> 下开发出来的。</p>
+<p>不同版本的Apache Tomcat实现了不同版本的Servlet和JSP规范。它们之间的对应关系如下：</p>
+<img src="/2016/09/01/Tomcat-8-介绍/QQ20160901-0-2x.png" alt="QQ20160901-0-2x.png" title="">
+<p>当选举一个发布版本时，如果审阅者认为次发布版本已经达到稳定水平，则会选取此版本为稳定版。新的主要版本最初的发布通常从Alpha版本开始,然后经历beta版，最后到稳定版，这通常要经历几个月的时间。不过，稳定版的条件是Java规范的实现都已经完成。也就是说，在所有其他方面被认为是稳定的，但如果规范的实现不是最终的，可能仍然被标记为Beta版。</p>
+<p><strong>Alpha</strong>  由于规范的要求和/或一些显著的bug的原因，可能含有大量的未经测试或者缺少的功能，并且预计不会在任何时间内稳定地运行。</p>
+<p><strong>Beta</strong> 可能含有一些未经测试的功能和/或一些相对较小的错误。Beta版预计不会稳定地运行。</p>
+<p><strong>Stable</strong> 可能包含少量相对较小的错误。稳定版本可以用于进行生产环境使用，预计可以长时间稳定地运行。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/09/01/Tomcat-8-介绍/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/08/26/Linux-Centos7设置nginx开机自启动/" itemprop="url">
+                  Linux/Centos7设置nginx开机自启动
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-26T00:04:12+08:00" content="2016-08-26">
+              2016-08-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/26/Linux-Centos7设置nginx开机自启动/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/26/Linux-Centos7设置nginx开机自启动/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/08/26/Linux-Centos7设置nginx开机自启动/" class="leancloud_visitors" data-flag-title="Linux/Centos7设置nginx开机自启动">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>185 字</span>
+                &nbsp; | &nbsp;
+                <span>1 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="新增shell脚本-vi-etc-rc-d-init-d-nginx"><a href="#新增shell脚本-vi-etc-rc-d-init-d-nginx" class="headerlink" title="新增shell脚本 vi /etc/rc.d/init.d/nginx"></a>新增shell脚本 vi /etc/rc.d/init.d/nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#! /bin/bash</span></div><div class="line"><span class="comment"># chkconfig: 35 85 15  </span></div><div class="line"><span class="comment"># description: Nginx is an HTTP(S) server, HTTP(S) reverse</span></div><div class="line"><span class="built_in">set</span> <span class="_">-e</span></div><div class="line">PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/sbin:/bin:/usr/sbin:/usr/bin</div><div class="line">DESC=<span class="string">"nginx daemon"</span>  </div><div class="line">NAME=nginx  </div><div class="line">DAEMON=/usr/<span class="built_in">local</span>/nginx/sbin/<span class="variable">$NAME</span>  </div><div class="line">SCRIPTNAME=/etc/init.d/<span class="variable">$NAME</span>  </div><div class="line"><span class="built_in">test</span> -x <span class="variable">$DAEMON</span> || <span class="built_in">exit</span> 0  </div><div class="line"><span class="function"><span class="title">d_start</span></span>()&#123;  </div><div class="line">   <span class="variable">$DAEMON</span> || <span class="built_in">echo</span> -n <span class="string">" already running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_stop</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> quit || <span class="built_in">echo</span> -n <span class="string">" not running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_reload</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> reload || <span class="built_in">echo</span> -n <span class="string">" counld not reload"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span>  </div><div class="line">  start)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Starting <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  stop)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Stopping <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  reload)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Reloading <span class="variable">$DESC</span> configuration..."</span></div><div class="line">     d_reload</div><div class="line">     <span class="built_in">echo</span> <span class="string">"reloaded."</span></div><div class="line">  ;;</div><div class="line">  restart)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Restarting <span class="variable">$DESC</span>: <span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     sleep 2</div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  *)</div><div class="line">     <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$SCRIPTNAME</span> &#123;start|stop|restart|reload&#125;"</span> &gt;&amp;2</div><div class="line">     <span class="built_in">exit</span> 3</div><div class="line">  ;;</div><div class="line"><span class="keyword">esac</span>  </div><div class="line"><span class="built_in">exit</span> 0</div></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/08/26/Linux-Centos7设置nginx开机自启动/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/08/01/CentOS7服务器初步配置/" itemprop="url">
                   CentOS7服务器初步配置
                 </a>
@@ -448,7 +1130,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -456,7 +1138,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -465,7 +1147,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

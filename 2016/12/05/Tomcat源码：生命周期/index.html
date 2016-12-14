@@ -1,0 +1,999 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tomcat," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Idea Buffer" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="从前几篇文章可以知道，Tomcat包含很多组件，并且一个组件可以包含多个组件，当Tomcat启动时，只需要启动最上层的组件，那么包含于该组件中的其他组件也会一并启动，关闭也一样。这就是通过实现org.apache.catalina.Lifecycle接口来实现的单一启动/关闭的效果。
+Tomcat的生命周期主要涉及到4种类型：Lifecycle、LifecycleEvent、LifecycleSt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tomcat源码：生命周期">
+<meta property="og:url" content="http://www.ideabuffer.cn/2016/12/05/Tomcat源码：生命周期/index.html">
+<meta property="og:site_name" content="Idea Buffer">
+<meta property="og:description" content="从前几篇文章可以知道，Tomcat包含很多组件，并且一个组件可以包含多个组件，当Tomcat启动时，只需要启动最上层的组件，那么包含于该组件中的其他组件也会一并启动，关闭也一样。这就是通过实现org.apache.catalina.Lifecycle接口来实现的单一启动/关闭的效果。
+Tomcat的生命周期主要涉及到4种类型：Lifecycle、LifecycleEvent、LifecycleSt">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/12/05/Tomcat源码：生命周期/QQ20161206-0@2x.png">
+<meta property="og:image" content="http://www.ideabuffer.cn/2016/12/05/Tomcat源码：生命周期/屏幕快照%202016-12-06%20下午10.54.49.png">
+<meta property="og:updated_time" content="2016-12-06T16:56:38.165Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tomcat源码：生命周期">
+<meta name="twitter:description" content="从前几篇文章可以知道，Tomcat包含很多组件，并且一个组件可以包含多个组件，当Tomcat启动时，只需要启动最上层的组件，那么包含于该组件中的其他组件也会一并启动，关闭也一样。这就是通过实现org.apache.catalina.Lifecycle接口来实现的单一启动/关闭的效果。
+Tomcat的生命周期主要涉及到4种类型：Lifecycle、LifecycleEvent、LifecycleSt">
+<meta name="twitter:image" content="http://www.ideabuffer.cn/2016/12/05/Tomcat源码：生命周期/QQ20161206-0@2x.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6319057304863901000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Tomcat源码：生命周期 | Idea Buffer </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9ad13c2f9edb81550c28aff1e84a4e06";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Idea Buffer</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">桑健的博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Tomcat源码：生命周期
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-05T22:44:53+08:00" content="2016-12-05">
+              2016-12-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/12/05/Tomcat源码：生命周期/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/05/Tomcat源码：生命周期/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/05/Tomcat源码：生命周期/" class="leancloud_visitors" data-flag-title="Tomcat源码：生命周期">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>3,393 字</span>
+                &nbsp; | &nbsp;
+                <span>14 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>从前几篇文章可以知道，Tomcat包含很多组件，并且一个组件可以包含多个组件，当Tomcat启动时，只需要启动最上层的组件，那么包含于该组件中的其他组件也会一并启动，关闭也一样。这就是通过实现<code>org.apache.catalina.Lifecycle</code>接口来实现的单一启动/关闭的效果。</p>
+<p>Tomcat的生命周期主要涉及到4种类型：<code>Lifecycle</code>、<code>LifecycleEvent</code>、<code>LifecycleState</code>和<code>LifecycleListener</code>，Tomcat也提供了<code>LifecycleBase</code>抽象类来简化生命周期的处理，它实现了<code>Lifecycle</code>接口，并提供了钩子函数来扩展各个组件在生命周期中的处理行为。</p>
+<p>生命周期的基本类图如下：</p>
+<img src="/2016/12/05/Tomcat源码：生命周期/QQ20161206-0@2x.png" alt="QQ20161206-0@2x.png" title="">
+<a id="more"></a>
+<h2 id="Lifecycle接口"><a href="#Lifecycle接口" class="headerlink" title="Lifecycle接口"></a>Lifecycle接口</h2><p>Tomcat中的组件可以包含多个其他组件，这些组件的启动和关闭并不需要进行单独的启动和关闭，而是只启动或关闭最上层的组件即可使全部组件都能够启动或关闭，这种单一启动/关闭机制就是通过<code>Lifecycle</code>接口来实现的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Lifecycle</span> </span>&#123;</div><div class="line"> </div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BEFORE_INIT_EVENT = <span class="string">"before_init"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String AFTER_INIT_EVENT = <span class="string">"after_init"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String START_EVENT = <span class="string">"start"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BEFORE_START_EVENT = <span class="string">"before_start"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String AFTER_START_EVENT = <span class="string">"after_start"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String STOP_EVENT = <span class="string">"stop"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BEFORE_STOP_EVENT = <span class="string">"before_stop"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String AFTER_STOP_EVENT = <span class="string">"after_stop"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String AFTER_DESTROY_EVENT = <span class="string">"after_destroy"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String BEFORE_DESTROY_EVENT = <span class="string">"before_destroy"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String PERIODIC_EVENT = <span class="string">"periodic"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIGURE_START_EVENT = <span class="string">"configure_start"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIGURE_STOP_EVENT = <span class="string">"configure_stop"</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addLifecycleListener</span><span class="params">(LifecycleListener listener)</span></span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> LifecycleListener[] findLifecycleListeners();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeLifecycleListener</span><span class="params">(LifecycleListener listener)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> LifecycleState <span class="title">getState</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getStateName</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SingleUse</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接口中定义了很多触发事件，常用的例如<code>before_init</code>、<code>after_init</code>、<code>before_start</code>、<code>start</code>、<code>after_start</code>等等，只看名字也能知道是做什么的了。</p>
+<p><code>start</code>和<code>stop</code>方法是对组件进行启动和关闭的操作；<code>addLifecycleListener</code>、<code>removeLifecycleListener</code>和<code>findLifecycleListeners</code>都是与事件监听相关的。一个组件可以注册多个事件监听器来监听该组件对应的某些事件，当触发了该事件时，会通知相应的监听器。</p>
+<p>这里面还有一个很有意思的内部接口<code>SingleUse</code>，它是一个标记接口，用于指示实例应该只使用一次。当一个组件实例实现了这个接口会在<code>stop</code>方法完成时自动调用<code>destroy</code>方法。例如在<code>LifecycleBase</code>中的<code>stop</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    stopInternal();</div><div class="line">&#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">    ExceptionUtils.handleThrowable(t);</div><div class="line">    setStateInternal(LifecycleState.FAILED, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> LifecycleException(sm.getString(<span class="string">"lifecycleBase.stopFail"</span>,toString()), t);</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line">    <span class="comment">// 如果实现了Lifecycle.SingleUse接口，则设置状态为已关闭，然后调用destroy()方法</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> <span class="keyword">instanceof</span> Lifecycle.SingleUse) &#123;</div><div class="line">        <span class="comment">// Complete stop process first</span></div><div class="line">        setStateInternal(LifecycleState.STOPPED, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">        destroy();</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>作为一个标记接口，并没有需要实现的方法，仅仅代表了一种能力，例如实现了<code>java.io.Serializable</code>接口的实例，表示该实例可以序列化，在判断时会使用<code>instanceof</code>关键字来进行判断。<br>其实在<code>java.util.Map&lt;K,V&gt;</code>接口中也定义了一个内部接口<code>Map.Entry&lt;K, V&gt;</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    ...</div><div class="line">    </div><div class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>那么为什么要定义一个内部接口呢，内部接口的作用是什么？具体现在我也不太清楚，这里先标记一下，有空专门研究一下。</p>
+<h2 id="LifecycleEvent类"><a href="#LifecycleEvent类" class="headerlink" title="LifecycleEvent类"></a>LifecycleEvent类</h2><p><code>LifecycleEvent</code>类的实例表示一个生命周期的事件，类的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">LifecycleEvent</span> <span class="keyword">extends</span> <span class="title">EventObject</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1L</span>;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Construct a new LifecycleEvent with the specified parameters.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> lifecycle Component on which this event occurred</div><div class="line">     * <span class="doctag">@param</span> type Event type (required)</div><div class="line">     * <span class="doctag">@param</span> data Event data (if any)</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LifecycleEvent</span><span class="params">(Lifecycle lifecycle, String type, Object data)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(lifecycle);</div><div class="line">        <span class="keyword">this</span>.type = type;</div><div class="line">        <span class="keyword">this</span>.data = data;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * The event data associated with this event.</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object data;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * The event type this instance represents.</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String type;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * <span class="doctag">@return</span> the event data of this event.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getData</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> data;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * <span class="doctag">@return</span> the Lifecycle on which this event occurred.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> Lifecycle <span class="title">getLifecycle</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (Lifecycle) getSource();</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * <span class="doctag">@return</span> the event type of this event.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getType</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.type;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在构造方法中，第一个参数为生命周期的组件，第二个参数为事件类型，第三个参数为传入的数据，可以看成是对这三种类型的封装。</p>
+<p>另外介绍一下<code>EventObject</code>对象，它里面定义了一个事件源对象，所谓事件源就是事件发生的地方，而在Tomcat的设计中，事件源就是实现了<code>Lifecycle</code>接口的各个需要管理生命周期的组件。每个组件都继承自<code>LifecycleBase</code>，那么组件就是通过<code>LifecycleBase</code>来实现事件源的传递，这样在<code>LifecycleBase</code>触发事件的时候，可以通过事件源（也就是相当于当前组件<em>this</em>）构建<code>EventObject</code>.这样以来<code>LifecycleListener</code>就可以通过事件对象获取到事件源，从而做一些与事件源相关的操作。如果还是不太清楚的话，继续往下看。</p>
+<h2 id="LifecycleListener接口"><a href="#LifecycleListener接口" class="headerlink" title="LifecycleListener接口"></a>LifecycleListener接口</h2><p>一个生命周期的事件监听器是该接口的实例，该接口的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LifecycleListener</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Acknowledge the occurrence of the specified event.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> event LifecycleEvent that has occurred</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lifecycleEvent</span><span class="params">(LifecycleEvent event)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>只有一个方法<code>lifecycleEvent</code>，看到该方法的参数正是上面所讲到的<code>LifecycleEvent</code>，当某个事件监听器监听到相关事件时，会调用该方法。例如，当<code>Server</code>组件启动时，看下<code>StandardServer</code>中的<code>startInternal</code>方法的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">startInternal</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException </span>&#123;</div><div class="line">    </div><div class="line">    <span class="comment">// 该方法继承自LifecycleBase</span></div><div class="line">    fireLifecycleEvent(CONFIGURE_START_EVENT, <span class="keyword">null</span>);</div><div class="line">    setState(LifecycleState.STARTING);</div><div class="line"></div><div class="line">    globalNamingResources.start();</div><div class="line"></div><div class="line">    <span class="comment">// Start our defined Services</span></div><div class="line">    <span class="keyword">synchronized</span> (servicesLock) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; services.length; i++) &#123;</div><div class="line">            services[i].start();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>fireLifecycleEvent</code>方法继承自<code>LifecycleBase</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">fireLifecycleEvent</span><span class="params">(String type, Object data)</span> </span>&#123;</div><div class="line">    LifecycleEvent event = <span class="keyword">new</span> LifecycleEvent(<span class="keyword">this</span>, type, data);</div><div class="line">    <span class="keyword">for</span> (LifecycleListener listener : lifecycleListeners) &#123;</div><div class="line">        listener.lifecycleEvent(event);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，在该方法中，创建了一个<code>LifecycleEvent</code>对象，并将当前对象（<code>StandardServer</code>）作为第一个参数传入<code>LifecycleEvent</code>构造器中，然后监听器会调用<code>lifecycleEvent</code>方法来执行具体的操作。</p>
+<h2 id="LifecycleBase类"><a href="#LifecycleBase类" class="headerlink" title="LifecycleBase类"></a>LifecycleBase类</h2><p><code>LifecycleBase</code>实现了<code>Lifecycle</code>接口，添加了几个新的方法如<code>setStateInternal</code>(更新组件状态)、<code>fireLifecycleEvent</code>(触发LifecycleEvent)，以及一些钩子方法例如<code>initInternal</code>、<code>startInternal</code>等。</p>
+<img src="/2016/12/05/Tomcat源码：生命周期/屏幕快照%202016-12-06%20下午10.54.49.png" alt="屏幕快照 2016-12-06 下午10.54.49.png" title="">
+<p>例如上文中提到的<code>fireLifecycleEvent</code>方法，用来触发事件；再例如，执行<code>init</code>方法时，会调用抽象方法<code>initInternal</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!state.equals(LifecycleState.NEW)) &#123;</div><div class="line">        invalidTransition(Lifecycle.BEFORE_INIT_EVENT);</div><div class="line">    &#125;</div><div class="line">    setStateInternal(LifecycleState.INITIALIZING, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        initInternal();</div><div class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">        ExceptionUtils.handleThrowable(t);</div><div class="line">        setStateInternal(LifecycleState.FAILED, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> LifecycleException(</div><div class="line">                sm.getString(<span class="string">"lifecycleBase.initFail"</span>,toString()), t);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    setStateInternal(LifecycleState.INITIALIZED, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">initInternal</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException</span>;</div></pre></td></tr></table></figure>
+<p>具体的规则在子类中实现。</p>
+<p>该类中定义了两个重要的变量：<code>lifecycleListeners</code>和<code>state</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * The list of registered LifecycleListeners for event notifications.</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;LifecycleListener&gt; lifecycleListeners = <span class="keyword">new</span> CopyOnWriteArrayList&lt;&gt;();</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * The current state of the source component.</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> LifecycleState state = LifecycleState.NEW;</div></pre></td></tr></table></figure>
+<p><code>lifecycleListeners</code>用来保存监听器，<code>state</code>表示当前生命周期的状态。</p>
+<h3 id="lifecycleListeners属性"><a href="#lifecycleListeners属性" class="headerlink" title="lifecycleListeners属性"></a>lifecycleListeners属性</h3><p>首先来看下<code>lifecycleListeners</code>，它是<code>CopyOnWriteArrayList</code>的类型，这里简单介绍一下：</p>
+<blockquote>
+<p>Copy-On-Write简称COW，是一种用于程序设计中的优化策略。其基本思路是，从一开始大家都在共享同一个内容，当某个人想要修改这个内容的时候，才会真正把内容Copy出去形成一个新的内容然后再改，这是一种延时懒惰策略。从JDK1.5开始Java并发包里提供了两个使用CopyOnWrite机制实现的并发容器,它们是CopyOnWriteArrayList和CopyOnWriteArraySet。CopyOnWrite容器非常有用，可以在非常多的并发场景中使用到。</p>
+</blockquote>
+<p>CopyOnWrite容器即写时复制的容器。通俗的理解是当我们往一个容器添加元素的时候，不直接往当前容器添加，而是先将当前容器进行Copy，复制出一个新的容器，然后新的容器里添加元素，添加完元素之后，再将原容器的引用指向新的容器。这样做的好处是我们可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器。</p>
+<p>那么在<code>LifecycleBase</code>中，为什么将<code>lifecycleListeners</code>变量定义为这种类型？从上面的分析可知，<code>CopyOnWriteArrayList</code>适用于读多写少的情况。回顾一下<a href="/2016/11/27/Tomcat源码：Catalina启动流程/">Tomcat源码：Catalina启动流程</a>中提到的<code>createStartDigester</code>方法，在该方法中有如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建listener，其中第二个参数为空，表示必须在配置文件中指定className</span></div><div class="line">digester.addObjectCreate(<span class="string">"Server/Listener"</span>,</div><div class="line">                         <span class="keyword">null</span>, <span class="comment">// MUST be specified in the element</span></div><div class="line">                         <span class="string">"className"</span>);</div><div class="line">digester.addSetProperties(<span class="string">"Server/Listener"</span>);</div><div class="line">digester.addSetNext(<span class="string">"Server/Listener"</span>,</div><div class="line">                    <span class="string">"addLifecycleListener"</span>,</div><div class="line">                    <span class="string">"org.apache.catalina.LifecycleListener"</span>);</div></pre></td></tr></table></figure>
+<p>对于服务器组件<code>Server</code>，监听器是在调用<code>StandardServer</code>的构造方法和解析配置文件<code>server.xml</code>时通过调用<code>addLifecycleListener</code>方法来添加到<code>lifecycleListeners</code>变量中的，那么当Tomcat启动后，就基本不会再添加新的Listener了。但注意，是<em>基本</em>不会添加，并不绝对，例如<code>org.apache.catalina.startup.HostConfig</code>，它也是一个监听器，看下其中的<code>reload</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * Note: If either of fileToRemove and newDocBase are null, both will be</div><div class="line"> *       ignored.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">reload</span><span class="params">(DeployedApplication app, File fileToRemove, String newDocBase)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span>(log.isInfoEnabled())</div><div class="line">        log.info(sm.getString(<span class="string">"hostConfig.reload"</span>, app.name));</div><div class="line">    Context context = (Context) host.findChild(app.name);</div><div class="line">    <span class="keyword">if</span> (context.getState().isAvailable()) &#123;</div><div class="line">        <span class="keyword">if</span> (fileToRemove != <span class="keyword">null</span> &amp;&amp; newDocBase != <span class="keyword">null</span>) &#123;</div><div class="line">            context.addLifecycleListener(</div><div class="line">                    <span class="keyword">new</span> ExpandedDirectoryRemovalListener(fileToRemove, newDocBase));</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// Reload catches and logs exceptions</span></div><div class="line">        context.reload();</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// If the context was not started (for example an error</span></div><div class="line">        <span class="comment">// in web.xml) we'll still get to try to start</span></div><div class="line">        <span class="keyword">if</span> (fileToRemove != <span class="keyword">null</span> &amp;&amp; newDocBase != <span class="keyword">null</span>) &#123;</div><div class="line">            ExpandWar.delete(fileToRemove);</div><div class="line">            context.setDocBase(newDocBase);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            context.start();</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            log.warn(sm.getString</div><div class="line">                     (<span class="string">"hostConfig.context.restart"</span>, app.name), e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该方法是重新加载一个context，那么可以看到，这里为<code>context</code>增加了一个监听器，该监听器用来确保在重新加载context时，将之前WAR包解压出来的目录删除，并且将dcoBase设置到指定的WAR。</p>
+<p>在使用<code>CopyOnWriteArrayList</code>时需要注意两个问题：</p>
+<ul>
+<li>内存占用问题</li>
+<li>数据一致性问题</li>
+</ul>
+<p><em>内存占用问题：</em>因为CopyOnWrite的写时复制机制，所以在进行写操作的时候，内存里会同时驻扎两个对象的内存，如果列表中的对象比较大，假设为100M，那么再写入100M的对象进去，内存就会占用200M，那么这个时候很有可能造成频繁的Yong GC和Full GC，从而会导致整个系统响应时间过长。</p>
+<p><em>数据一致性问题：</em>CopyOnWrite容器只能保证数据的最终一致性，不能保证数据的实时一致性。所以如果你希望写入的的数据能够立即读到，那么请不要使用CopyOnWrite容器。</p>
+<p>总体来说，一般组件启动之后，就基本不会再添加新的监听器了，所以使用<code>CopyOnWriteArrayList</code>类型是很合适的。</p>
+<h3 id="state属性"><a href="#state属性" class="headerlink" title="state属性"></a>state属性</h3><p>再来看下<code>state</code>属性，该属性被<code>volatile</code>关键字修饰，保证了<code>state</code>属性的可见性，但也仅仅是可见性，而不具有原子性，所以，它与<code>synchronized</code>关键字相比，少了原子性，可以看做是”轻量级的<code>synchronized</code>“。</p>
+<p>这里为什么用<code>volatile</code>关键字修饰？</p>
+<p>先考虑一下是否需要原子性。我们现在可以知道，一个组件的状态是在调用生命周期的<code>init</code>、<code>start</code>等<code>Lifecycle</code>接口中定义的生命周期行为的方法时才会被设置，一个组件不可能在同一时间调用不同的生命周期行为，所以原子性是不必要的。</p>
+<p>再来考虑一下可见性。当组件的状态改变时，当然是需要立即被读取到，通过组件生命周期的状态来判断是否应该执行指定的生命周期的行为，例如一个组件已经执行了<code>destroy</code>方法，那么就不可能再调用该组件的<code>start</code>方法，所以可见性是必须的。</p>
+<h2 id="LifecycleState类"><a href="#LifecycleState类" class="headerlink" title="LifecycleState类"></a>LifecycleState类</h2><p><code>LifecycleState</code>是一个枚举类型，定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * The list of valid states for components that implement &#123;<span class="doctag">@link</span> Lifecycle&#125;.</div><div class="line"> * See &#123;<span class="doctag">@link</span> Lifecycle&#125; for the state transition diagram.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> LifecycleState &#123;</div><div class="line">    NEW(<span class="keyword">false</span>, <span class="keyword">null</span>),</div><div class="line">    INITIALIZING(<span class="keyword">false</span>, Lifecycle.BEFORE_INIT_EVENT),</div><div class="line">    INITIALIZED(<span class="keyword">false</span>, Lifecycle.AFTER_INIT_EVENT),</div><div class="line">    STARTING_PREP(<span class="keyword">false</span>, Lifecycle.BEFORE_START_EVENT),</div><div class="line">    STARTING(<span class="keyword">true</span>, Lifecycle.START_EVENT),</div><div class="line">    STARTED(<span class="keyword">true</span>, Lifecycle.AFTER_START_EVENT),</div><div class="line">    STOPPING_PREP(<span class="keyword">true</span>, Lifecycle.BEFORE_STOP_EVENT),</div><div class="line">    STOPPING(<span class="keyword">false</span>, Lifecycle.STOP_EVENT),</div><div class="line">    STOPPED(<span class="keyword">false</span>, Lifecycle.AFTER_STOP_EVENT),</div><div class="line">    DESTROYING(<span class="keyword">false</span>, Lifecycle.BEFORE_DESTROY_EVENT),</div><div class="line">    DESTROYED(<span class="keyword">false</span>, Lifecycle.AFTER_DESTROY_EVENT),</div><div class="line">    FAILED(<span class="keyword">false</span>, <span class="keyword">null</span>);</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> available;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String lifecycleEvent;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LifecycleState</span><span class="params">(<span class="keyword">boolean</span> available, String lifecycleEvent)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.available = available;</div><div class="line">        <span class="keyword">this</span>.lifecycleEvent = lifecycleEvent;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * May the public methods other than property getters/setters and lifecycle</div><div class="line">     * methods be called for a component in this state? It returns</div><div class="line">     * &lt;code&gt;true&lt;/code&gt; for any component in any of the following states:</div><div class="line">     * &lt;ul&gt;</div><div class="line">     * &lt;li&gt;&#123;<span class="doctag">@link</span> #STARTING&#125;&lt;/li&gt;</div><div class="line">     * &lt;li&gt;&#123;<span class="doctag">@link</span> #STARTED&#125;&lt;/li&gt;</div><div class="line">     * &lt;li&gt;&#123;<span class="doctag">@link</span> #STOPPING_PREP&#125;&lt;/li&gt;</div><div class="line">     * &lt;/ul&gt;</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> &lt;code&gt;true&lt;/code&gt; if the component is available for use,</div><div class="line">     *         otherwise &lt;code&gt;false&lt;/code&gt;</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAvailable</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> available;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getLifecycleEvent</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> lifecycleEvent;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>LifecycleState</code>包含两个属性：<code>available</code>和<code>lifecycleEvent</code>。</p>
+<ul>
+<li><p>available：判断在当前状态下是否可以调用除getter/setter方法以外的public方法以及生命周期中的方法。当前状态为以下状态时返回<code>true</code>:</p>
+<ul>
+<li>STARTING</li>
+<li>STARTED</li>
+<li>STOPPING_PREP</li>
+</ul>
+</li>
+<li><p>getLifecycleEvent：获取处于此状态的组件正在进行的事件</p>
+</li>
+</ul>
+<p>例如，在<code>StandardServer</code>中的<code>addService</code>方法中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addService</span><span class="params">(Service service)</span> </span>&#123;</div><div class="line"></div><div class="line">    service.setServer(<span class="keyword">this</span>);</div><div class="line"></div><div class="line">    <span class="keyword">synchronized</span> (servicesLock) &#123;</div><div class="line">        Service results[] = <span class="keyword">new</span> Service[services.length + <span class="number">1</span>];</div><div class="line">        System.arraycopy(services, <span class="number">0</span>, results, <span class="number">0</span>, services.length);</div><div class="line">        results[services.length] = service;</div><div class="line">        services = results;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (getState().isAvailable()) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                service.start();</div><div class="line">            &#125; <span class="keyword">catch</span> (LifecycleException e) &#123;</div><div class="line">                <span class="comment">// Ignore</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// Report this property change to interested listeners</span></div><div class="line">        support.firePropertyChange(<span class="string">"service"</span>, <span class="keyword">null</span>, service);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果当前Server正在启动或者已经启动，就可以直接启动服务组件<code>service</code>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是Tomcat生命周期的核心内容，了解了生命周期，就可以很清楚的明白Tomcat的启动流程，通过Lifecycle，Tomcat只需启动最顶层组件<code>Server</code>，即可启动所有的组件，关闭也是类似，这就是单一启动/关闭机制。</p>
+<p>通过对源码的阅读，不仅需要知道代码是怎么设计的，还需要知道代码为什么这样设计，例如本文中提到的<code>LifecycleBase</code>中的两个属性：<code>lifecycleListeners</code>和<code>state</code>，<code>lifecycleListeners</code>为什么要定义为<code>CopyOnWriteArrayList</code>类型？<code>state</code>为什么要用<code>volatile</code>关键字修饰？结合它们的使用，便可以知道它们的使用场景，可以更加透彻的分析出整个流程执行的机制，从而也会收获的更多。<br>最后，希望对大家有所帮助。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Tomcat/" rel="tag">#Tomcat</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/04/设计模式：观察者模式/" rel="next" title="设计模式：观察者模式">
+                <i class="fa fa-chevron-left"></i> 设计模式：观察者模式
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/08/Tomcat源码：Connector/" rel="prev" title="Tomcat源码：Connector">
+                Tomcat源码：Connector <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/05/Tomcat源码：生命周期/"
+           data-title="Tomcat源码：生命周期" data-url="http://www.ideabuffer.cn/2016/12/05/Tomcat源码：生命周期/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Neo" />
+          <p class="site-author-name" itemprop="name">Neo</p>
+          <p class="site-description motion-element" itemprop="description">More Articles,More Ideas</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lifecycle接口"><span class="nav-number">1.</span> <span class="nav-text">Lifecycle接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LifecycleEvent类"><span class="nav-number">2.</span> <span class="nav-text">LifecycleEvent类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LifecycleListener接口"><span class="nav-number">3.</span> <span class="nav-text">LifecycleListener接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LifecycleBase类"><span class="nav-number">4.</span> <span class="nav-text">LifecycleBase类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lifecycleListeners属性"><span class="nav-number">4.1.</span> <span class="nav-text">lifecycleListeners属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state属性"><span class="nav-number">4.2.</span> <span class="nav-text">state属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LifecycleState类"><span class="nav-number">5.</span> <span class="nav-text">LifecycleState类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Neo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sangjian"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="//cdn.bootcss.com/UAParser.js/0.7.9/ua-parser.min.js"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("mI3fROQj8loMvwBe0hQWTgLD-gzGzoHsz", "MyNIlLz7uUKSexkXWgeWFVKp");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
