@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/05/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E8%A1%A8%E7%A4%BA/</loc>
+    <lastmod>2017-05-24T14:49:17.685Z</lastmod>
+    <data>
+        <display>
+        <title>计算机中浮点数的二进制表示</title>
+        <pubTime>2017-05-16T16:47:35.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>计算机</tag>
+         
+        <tag>浮点数</tag>
+         
+        <tag>二进制</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="计算机系统" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/05/12/Java8%E4%BD%BF%E7%94%A8-sun-misc-Contended%E9%81%BF%E5%85%8D%E4%BC%AA%E5%85%B1%E4%BA%AB/</loc>
+    <lastmod>2017-05-11T17:40:05.919Z</lastmod>
+    <data>
+        <display>
+        <title>Java8使用@sun.misc.Contended避免伪共享</title>
+        <pubTime>2017-05-11T17:35:18.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>伪共享</tag>
+         
+        <tag>FalseSharing</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="JVM" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/05/06/Java%E5%AF%B9%E8%B1%A1%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/</loc>
+    <lastmod>2017-05-08T13:43:33.120Z</lastmod>
+    <data>
+        <display>
+        <title>Java对象内存布局</title>
+        <pubTime>2017-05-06T11:59:58.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>JVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="JVM" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/05/07/%E7%90%86%E8%A7%A3CPU-Cache/</loc>
+    <lastmod>2017-05-07T09:32:11.929Z</lastmod>
+    <data>
+        <display>
+        <title>理解CPU Cache</title>
+        <pubTime>2017-05-07T09:31:49.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>CPU</tag>
+         
+        <tag>Cache</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="JVM" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/04/21/java-%E4%B8%AD%E7%9A%84%E9%94%81-%E5%81%8F%E5%90%91%E9%94%81%E3%80%81%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E3%80%81%E8%87%AA%E6%97%8B%E9%94%81%E3%80%81%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/</loc>
+    <lastmod>2017-04-21T03:29:41.527Z</lastmod>
+    <data>
+        <display>
+        <title>java 中的锁 -- 偏向锁、轻量级锁、自旋锁、重量级锁</title>
+        <pubTime>2017-04-21T03:14:22.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>JVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="JVM" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/04/14/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%EF%BC%9AScheduledThreadPoolExecutor/</loc>
+    <lastmod>2017-04-14T17:07:25.358Z</lastmod>
+    <data>
+        <display>
+        <title>深入理解Java线程池：ScheduledThreadPoolExecutor</title>
+        <pubTime>2017-04-14T03:46:02.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Concurrent</tag>
+         
+        <tag>线程池</tag>
+         
+        <tag>ThreadPool</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="J.U.C" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/J-U-C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/04/06/FutureTask%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2017-04-10T09:04:11.951Z</lastmod>
+    <data>
+        <display>
+        <title>FutureTask源码解析</title>
+        <pubTime>2017-04-06T14:59:37.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Concurrent</tag>
+         
+        <tag>线程池</tag>
+         
+        <tag>ThreadPool</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="J.U.C" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/J-U-C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/04/04/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%EF%BC%9AThreadPoolExecutor/</loc>
+    <lastmod>2017-04-10T08:38:58.228Z</lastmod>
+    <data>
+        <display>
+        <title>深入理解Java线程池：ThreadPoolExecutor</title>
+        <pubTime>2017-04-04T11:03:22.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Concurrent</tag>
+         
+        <tag>线程池</tag>
+         
+        <tag>ThreadPool</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="J.U.C" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/J-U-C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/03/15/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3AbstractQueuedSynchronizer%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    <lastmod>2017-03-30T02:34:36.539Z</lastmod>
+    <data>
+        <display>
+        <title>深入理解AbstractQueuedSynchronizer（一）</title>
+        <pubTime>2017-03-15T08:24:33.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Concurrent</tag>
+         
+        <tag>AQS</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="J.U.C" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/J-U-C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/03/20/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3AbstractQueuedSynchronizer%EF%BC%88%E4%B8%89%EF%BC%89/</loc>
+    <lastmod>2017-03-30T02:34:36.449Z</lastmod>
+    <data>
+        <display>
+        <title>深入理解AbstractQueuedSynchronizer（三）</title>
+        <pubTime>2017-03-20T15:33:05.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Concurrent</tag>
+         
+        <tag>AQS</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="J.U.C" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/J-U-C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2017/03/19/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3AbstractQueuedSynchronizer%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
+    <lastmod>2017-03-30T02:34:36.441Z</lastmod>
+    <data>
+        <display>
+        <title>深入理解AbstractQueuedSynchronizer（二）</title>
+        <pubTime>2017-03-19T10:50:14.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Concurrent</tag>
+         
+        <tag>AQS</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+             
+              <breadCrumb title="J.U.C" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/J-U-C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/24/Tomcat%E6%BA%90%E7%A0%81%EF%BC%9A%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/</loc>
+    <lastmod>2016-12-25T10:05:06.771Z</lastmod>
+    <data>
+        <display>
+        <title>Tomcat源码：类加载器</title>
+        <pubTime>2016-12-24T08:12:01.000Z</pubTime>
+        
+        <tag>Tomcat</tag>
+         
+         
+           
+             
+              <breadCrumb title="Tomcat源码" url="http://www.ideabuffer.cn/categories/Tomcat%E6%BA%90%E7%A0%81/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/21/JMX%EF%BC%9ADynamic-MBean/</loc>
+    <lastmod>2016-12-21T16:41:49.510Z</lastmod>
+    <data>
+        <display>
+        <title>JMX：Dynamic MBean</title>
+        <pubTime>2016-12-21T15:14:35.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>JMX</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/21/JMX%EF%BC%9AModel-MBean/</loc>
+    <lastmod>2016-12-21T15:04:45.187Z</lastmod>
+    <data>
+        <display>
+        <title>JMX：Model MBean</title>
+        <pubTime>2016-12-21T15:04:45.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/18/JMX%EF%BC%9ANotification/</loc>
+    <lastmod>2016-12-18T09:07:31.449Z</lastmod>
+    <data>
+        <display>
+        <title>JMX：Notification</title>
+        <pubTime>2016-12-18T06:52:56.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>JMX</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/14/JMX%EF%BC%9AStandard-MBean/</loc>
+    <lastmod>2016-12-14T16:15:37.628Z</lastmod>
+    <data>
+        <display>
+        <title>JMX：Standard MBean</title>
+        <pubTime>2016-12-14T13:44:20.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>JMX</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/14/JMX%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/</loc>
+    <lastmod>2016-12-13T16:42:12.128Z</lastmod>
+    <data>
+        <display>
+        <title>JMX架构简介</title>
+        <pubTime>2016-12-13T16:20:05.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>JMX</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/08/Tomcat%E6%BA%90%E7%A0%81%EF%BC%9AConnector/</loc>
+    <lastmod>2016-12-08T15:28:44.819Z</lastmod>
+    <data>
+        <display>
+        <title>Tomcat源码：Connector</title>
+        <pubTime>2016-12-08T15:28:44.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/05/Tomcat%E6%BA%90%E7%A0%81%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</loc>
+    <lastmod>2016-12-06T16:56:38.165Z</lastmod>
+    <data>
+        <display>
+        <title>Tomcat源码：生命周期</title>
+        <pubTime>2016-12-05T14:44:53.000Z</pubTime>
+        
+        <tag>Tomcat</tag>
+         
+         
+           
+             
+              <breadCrumb title="Tomcat源码" url="http://www.ideabuffer.cn/categories/Tomcat%E6%BA%90%E7%A0%81/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2016-12-04T09:07:26.379Z</lastmod>
+    <data>
+        <display>
+        <title>设计模式：观察者模式</title>
+        <pubTime>2016-12-04T06:49:58.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="设计模式" url="http://www.ideabuffer.cn/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/03/Tomcat%E6%BA%90%E7%A0%81%EF%BC%9A%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%84%E4%BB%B6/</loc>
+    <lastmod>2016-12-03T17:31:19.775Z</lastmod>
+    <data>
+        <display>
+        <title>Tomcat源码：服务器组件</title>
+        <pubTime>2016-12-03T14:48:55.000Z</pubTime>
+        
+        <tag>Tomcat</tag>
+         
+         
+           
+             
+              <breadCrumb title="Tomcat源码" url="http://www.ideabuffer.cn/categories/Tomcat%E6%BA%90%E7%A0%81/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/11/27/Tomcat%E6%BA%90%E7%A0%81%EF%BC%9ACatalina%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</loc>
+    <lastmod>2016-12-03T15:38:38.855Z</lastmod>
+    <data>
+        <display>
+        <title>Tomcat源码：Catalina启动流程</title>
+        <pubTime>2016-11-26T16:10:55.000Z</pubTime>
+        
+        <tag>Tomcat</tag>
+         
+         
+           
+             
+              <breadCrumb title="Tomcat源码" url="http://www.ideabuffer.cn/categories/Tomcat%E6%BA%90%E7%A0%81/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/12/02/Java7%E4%B8%AD%E7%9A%84try-with-resources/</loc>
+    <lastmod>2016-12-01T17:28:40.449Z</lastmod>
+    <data>
+        <display>
+        <title>Java7 中的try-with-resources</title>
+        <pubTime>2016-12-01T17:21:26.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="开发手册" url="http://www.ideabuffer.cn/categories/%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/11/26/Tomcat%E6%BA%90%E7%A0%81%EF%BC%9ABootstrap%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</loc>
+    <lastmod>2016-11-26T15:35:03.669Z</lastmod>
+    <data>
+        <display>
+        <title>Tomcat源码：Bootstrap启动流程</title>
+        <pubTime>2016-11-26T11:19:13.000Z</pubTime>
+        
+        <tag>Tomcat</tag>
+         
+         
+           
+             
+              <breadCrumb title="Tomcat源码" url="http://www.ideabuffer.cn/categories/Tomcat%E6%BA%90%E7%A0%81/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/11/25/test/</loc>
+    <lastmod>2016-11-25T15:22:07.039Z</lastmod>
+    <data>
+        <display>
+        <title>test</title>
+        <pubTime>2016-11-25T15:21:21.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/11/20/Linux%E9%85%8D%E7%BD%AE%E8%B0%83%E4%BC%98%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6%E4%B8%AA%E6%95%B0/</loc>
+    <lastmod>2016-11-19T17:27:25.128Z</lastmod>
+    <data>
+        <display>
+        <title>Linux配置调优：最大打开文件描述符个数</title>
+        <pubTime>2016-11-19T17:26:38.000Z</pubTime>
+        
+        <tag>Linux</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.ideabuffer.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/11/12/Nginx%E9%85%8D%E7%BD%AE%EF%BC%9A%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%EF%BC%881%EF%BC%89/</loc>
+    <lastmod>2016-11-12T14:51:13.047Z</lastmod>
+    <data>
+        <display>
+        <title>Nginx配置：虚拟主机（1）</title>
+        <pubTime>2016-11-12T08:50:16.000Z</pubTime>
+        
+        <tag>Nginx</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.ideabuffer.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/08/26/Linux-Centos7%E8%AE%BE%E7%BD%AEnginx%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8/</loc>
+    <lastmod>2016-11-12T14:21:29.579Z</lastmod>
+    <data>
+        <display>
+        <title>Linux/Centos7设置nginx开机自启动</title>
+        <pubTime>2016-08-25T16:04:12.000Z</pubTime>
+        
+        <tag>CentOS</tag>
+         
+        <tag>Linux</tag>
+         
+        <tag>Shell</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.ideabuffer.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/09/01/Tomcat-8-%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2016-11-12T14:20:37.975Z</lastmod>
+    <data>
+        <display>
+        <title>Tomcat 8 介绍</title>
+        <pubTime>2016-09-01T13:52:06.000Z</pubTime>
+        
+        <tag>Tomcat</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/08/01/CentOS7%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%88%9D%E6%AD%A5%E9%85%8D%E7%BD%AE/</loc>
+    <lastmod>2016-11-12T14:19:56.077Z</lastmod>
+    <data>
+        <display>
+        <title>CentOS7服务器初步配置</title>
+        <pubTime>2016-07-31T16:01:31.000Z</pubTime>
+        
+        <tag>CentOS</tag>
+         
+        <tag>SSH</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务器" url="http://www.ideabuffer.cn/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
+    <loc>http://www.ideabuffer.cn/2016/10/27/%E8%A7%A3%E5%86%B3mysql5-6%E5%8D%A0%E7%94%A8%E5%86%85%E5%AD%98%E8%BF%87%E5%A4%A7/</loc>
+    <lastmod>2016-11-05T17:08:12.911Z</lastmod>
+    <data>
+        <display>
+        <title>解决mysql5.6占用内存过大</title>
+        <pubTime>2016-10-27T07:16:45.000Z</pubTime>
+        
+        <tag>Mysql</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+</urlset>

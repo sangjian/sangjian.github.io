@@ -72,7 +72,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Java,博客,技术,框架,源码,JDK" />
 
 
 
@@ -116,7 +116,7 @@
   };
 </script>
 
-  <title> Idea Buffer </title>
+  <title> Idea Buffer - More Articles,More Ideas  </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -129,7 +129,7 @@
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?9ad13c2f9edb81550c28aff1e84a4e06";
+      hm.src = "//hm.baidu.com/hm.js?c1fabfb948708b8533d37369d8a16a85";
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
@@ -281,8 +281,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/12/03/Tomcat源码：服务器组件/" itemprop="url">
-                  Tomcat源码：服务器组件
+                <a class="post-title-link" href="/2017/03/15/深入理解AbstractQueuedSynchronizer（一）/" itemprop="url">
+                  深入理解AbstractQueuedSynchronizer（一）
                 </a>
               
             
@@ -295,8 +295,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-12-03T22:48:55+08:00" content="2016-12-03">
-              2016-12-03
+            <time itemprop="dateCreated" datetime="2017-03-15T16:24:33+08:00" content="2017-03-15">
+              2017-03-15
             </time>
           </span>
 
@@ -309,8 +309,20 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
-                    <span itemprop="name">Tomcat源码</span>
+                  <a href="/categories/开发手册/" itemprop="url" rel="index">
+                    <span itemprop="name">开发手册</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发手册/J-U-C/" itemprop="url" rel="index">
+                    <span itemprop="name">J.U.C</span>
                   </a>
                 </span>
 
@@ -323,20 +335,13 @@
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/12/03/Tomcat源码：服务器组件/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/03/Tomcat源码：服务器组件/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
 
           
           
-             <span id="/2016/12/03/Tomcat源码：服务器组件/" class="leancloud_visitors" data-flag-title="Tomcat源码：服务器组件">
+             <span id="/2017/03/15/深入理解AbstractQueuedSynchronizer（一）/" class="leancloud_visitors" data-flag-title="深入理解AbstractQueuedSynchronizer（一）">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -350,9 +355,9 @@
           
               <span class="post-letters-count">
                 &nbsp; | &nbsp;
-                <span>1,552 字</span>
+                <span>5,394 字</span>
                 &nbsp; | &nbsp;
-                <span>6 min</span>
+                <span>22 min</span>
               </span>
           
         </div>
@@ -367,12 +372,11 @@
 
       
         
-          <h2 id="Server接口"><a href="#Server接口" class="headerlink" title="Server接口"></a>Server接口</h2><p><code>org.apache.catalina.Server</code>接口定义了Tomcat的服务器组件，该接口的实例代表了整个servlet引擎，包括了所有的组件。Tomcat的服务器组件非常重要，因为它可以很优雅的来启动或关闭整个系统，不需要对连接器和容器单独进行启动和关闭。</p>
-<p>下面来介绍一下启动和关闭的工作原理。</p>
-<p>从之前的文章<a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/">Tomcat源码：Bootstrap启动流程</a>和<a href="/2016/11/27/Tomcat源码：Catalina启动流程/">Tomcat源码：Catalina启动流程</a>可以了解到，当Tomcat启动的时候，会调用<code>Catalina</code>的<code>setAwait(true)</code>方法，将<code>await</code>变量设置为<code>true</code>，然后调用<code>start</code>方法启动Tomcat，看下<code>Catalina</code>中的<code>start</code>方法的最后几行：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (await) &#123;</div><div class="line">    await();</div><div class="line">    stop();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <h2 id="AbstractQueuedSynchronizer简介"><a href="#AbstractQueuedSynchronizer简介" class="headerlink" title="AbstractQueuedSynchronizer简介"></a>AbstractQueuedSynchronizer简介</h2><p>AbstractQueuedSynchronizer提供了一个FIFO队列，可以看做是一个可以用来实现锁以及其他需要同步功能的框架。这里简称该类为AQS。AQS的使用依靠继承来完成，子类通过继承自AQS并实现所需的方法来管理同步状态。例如ReentrantLock，CountDownLatch等。</p>
+<p>本篇文章基于JDK1.8来介绍，该类有许多实现类：</p>
+<img src="/2017/03/15/深入理解AbstractQueuedSynchronizer（一）/QQ20170313-231557@2x.png" alt="QQ20170313-231557@2x.png" title="">
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/12/03/Tomcat源码：服务器组件/#more" rel="contents">
+            <a class="btn" href="/2017/03/15/深入理解AbstractQueuedSynchronizer（一）/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -423,8 +427,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/12/02/Java7中的try-with-resources/" itemprop="url">
-                  Java7 中的try-with-resources
+                <a class="post-title-link" href="/2016/12/24/Tomcat源码：类加载器/" itemprop="url">
+                  Tomcat源码：类加载器
                 </a>
               
             
@@ -437,8 +441,143 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-12-02T01:21:26+08:00" content="2016-12-02">
-              2016-12-02
+            <time itemprop="dateCreated" datetime="2016-12-24T16:12:01+08:00" content="2016-12-24">
+              2016-12-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/24/Tomcat源码：类加载器/" class="leancloud_visitors" data-flag-title="Tomcat源码：类加载器">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>2,505 字</span>
+                &nbsp; | &nbsp;
+                <span>11 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在<a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/">Tomcat源码：Bootstrap启动流程</a>文章中简单介绍过Java类加载器和Tomcat的类加载器，可以知道，每一个应用都有一个单独的类加载器来加载位于该应用下的WEB-INF/lib中的jar文件和WEB-INF/classes中的class文件，该应用不可以访问其他路径的class或jar。</p>
+<p>Tomcat中实现自定义加载器还有另一个原因，就是为了提供自动重载的功能，如果当WEB-INF/classes目录或WEB-INF/lib目录中的类发生变化时，Web应用会重新加载这些类。</p>
+<p>下面来看一下Tomcat中类加载器的类图：</p>
+<img src="/2016/12/24/Tomcat源码：类加载器/QQ20161224-0@2x.png" alt="QQ20161224-0@2x.png" title="">
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/12/24/Tomcat源码：类加载器/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/21/JMX：Dynamic-MBean/" itemprop="url">
+                  JMX：Dynamic MBean
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-21T23:14:35+08:00" content="2016-12-21">
+              2016-12-21
             </time>
           </span>
 
@@ -465,20 +604,13 @@
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/12/02/Java7中的try-with-resources/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/02/Java7中的try-with-resources/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
 
           
           
-             <span id="/2016/12/02/Java7中的try-with-resources/" class="leancloud_visitors" data-flag-title="Java7 中的try-with-resources">
+             <span id="/2016/12/21/JMX：Dynamic-MBean/" class="leancloud_visitors" data-flag-title="JMX：Dynamic MBean">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -492,950 +624,7 @@
           
               <span class="post-letters-count">
                 &nbsp; | &nbsp;
-                <span>2,238 字</span>
-                &nbsp; | &nbsp;
-                <span>10 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>今天调试了一下Tomcat关闭代码，在执行关闭时会调用<code>Catalina</code>对象的<code>stopServer</code>方法，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopServer</span><span class="params">(String[] arguments)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (arguments != <span class="keyword">null</span>) &#123;</div><div class="line">        arguments(arguments);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Server s = getServer();</div><div class="line">    <span class="keyword">if</span> (s == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// Create and execute our Digester</span></div><div class="line">        Digester digester = createStopDigester();</div><div class="line">        File file = configFile();</div><div class="line">        <span class="keyword">try</span> (FileInputStream fis = <span class="keyword">new</span> FileInputStream(file)) &#123;</div><div class="line">            InputSource is =</div><div class="line">                <span class="keyword">new</span> InputSource(file.toURI().toURL().toString());</div><div class="line">            is.setByteStream(fis);</div><div class="line">            digester.push(<span class="keyword">this</span>);</div><div class="line">            digester.parse(is);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            log.error(<span class="string">"Catalina.stop: "</span>, e);</div><div class="line">            System.exit(<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// Server object already present. Must be running as a service</span></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            s.stop();</div><div class="line">        &#125; <span class="keyword">catch</span> (LifecycleException e) &#123;</div><div class="line">            log.error(<span class="string">"Catalina.stop: "</span>, e);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Stop the existing server</span></div><div class="line">    s = getServer();</div><div class="line">    <span class="keyword">if</span> (s.getPort()&gt;<span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">/*</div><div class="line">         * 注意这段代码，并没有对资源进行close</div><div class="line">         */</span></div><div class="line">        <span class="keyword">try</span> (Socket socket = <span class="keyword">new</span> Socket(s.getAddress(), s.getPort());</div><div class="line">                OutputStream stream = socket.getOutputStream()) &#123;</div><div class="line">            String shutdown = s.getShutdown();</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; shutdown.length(); i++) &#123;</div><div class="line">                stream.write(shutdown.charAt(i));</div><div class="line">            &#125;</div><div class="line">            stream.flush();</div><div class="line">        &#125; <span class="keyword">catch</span> (ConnectException ce) &#123;</div><div class="line">            log.error(sm.getString(<span class="string">"catalina.stopServer.connectException"</span>,</div><div class="line">                                   s.getAddress(),</div><div class="line">                                   String.valueOf(s.getPort())));</div><div class="line">            log.error(<span class="string">"Catalina.stop: "</span>, ce);</div><div class="line">            System.exit(<span class="number">1</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">            log.error(<span class="string">"Catalina.stop: "</span>, e);</div><div class="line">            System.exit(<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        log.error(sm.getString(<span class="string">"catalina.stopServer"</span>));</div><div class="line">        System.exit(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>啥意思呢，就是在执行<code>stopServer</code>方法时通过<code>Socket</code>来发送一个<code>SHUTDOWN</code>字符串到指定Tomcat的Server监听端口（默认为8005），来告诉Tomcat要执行关闭操作。</p>
-<p>接收这个字符串的代码在<code>StandardServer</code>的<code>await</code>方法中，代码如下：</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/12/02/Java7中的try-with-resources/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/27/Tomcat源码：Catalina启动流程/" itemprop="url">
-                  Tomcat源码：Catalina启动流程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-27T00:10:55+08:00" content="2016-11-27">
-              2016-11-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
-                    <span itemprop="name">Tomcat源码</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/27/Tomcat源码：Catalina启动流程/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/27/Tomcat源码：Catalina启动流程/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/27/Tomcat源码：Catalina启动流程/" class="leancloud_visitors" data-flag-title="Tomcat源码：Catalina启动流程">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>2,246 字</span>
-                &nbsp; | &nbsp;
-                <span>11 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>上篇文章分析了<code>Bootstrap</code>类的启动流程，可以知道，<code>Bootstrap</code>实际上是调用了<code>Catalina</code>类的对象来实现Tomcat的启动的，这篇文章来介绍一下<code>Catalina</code>类的启动流程。</p>
-<p>回顾一下<code>Bootstrap</code>中main方法执行启动时的代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (command.equals(<span class="string">"start"</span>)) &#123;</div><div class="line">    daemon.setAwait(<span class="keyword">true</span>);</div><div class="line">    daemon.load(args);</div><div class="line">    daemon.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>下面介绍Catalina类中的方法。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/27/Tomcat源码：Catalina启动流程/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/26/Tomcat源码：Bootstrap启动流程/" itemprop="url">
-                  Tomcat源码：Bootstrap启动流程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-26T19:19:13+08:00" content="2016-11-26">
-              2016-11-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
-                    <span itemprop="name">Tomcat源码</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/26/Tomcat源码：Bootstrap启动流程/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/26/Tomcat源码：Bootstrap启动流程/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/26/Tomcat源码：Bootstrap启动流程/" class="leancloud_visitors" data-flag-title="Tomcat源码：Bootstrap启动流程">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>1,897 字</span>
-                &nbsp; | &nbsp;
-                <span>9 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Tomcat的启动流程从整体上来说并不算复杂，启动的入口就是从Bootstrap类的main方法开始的，这篇文章就让我们来看一下Bootstrap这个类都干了些什么。</p>
-<h2 id="Bootstrap类中的变量"><a href="#Bootstrap类中的变量" class="headerlink" title="Bootstrap类中的变量"></a>Bootstrap类中的变量</h2><p>首先看下Bootstrap都定义了哪些变量</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Bootstrap类的引用</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> Bootstrap daemon = <span class="keyword">null</span>;</div><div class="line"></div><div class="line"><span class="comment">// 这两个路径一般都是tomcat的根目录，即webapp的父目录</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> File catalinaBaseFile;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> File catalinaHomeFile;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Pattern PATH_PATTERN = Pattern.compile(<span class="string">"(\".*?\")|(([^,])*)"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 这个其实就是`org.apache.catalina.startup.Catalina`对象，它是真正负责启动server的对象</span></div><div class="line"><span class="keyword">private</span> Object catalinaDaemon = <span class="keyword">null</span>;</div><div class="line"></div><div class="line"><span class="comment">// tomcat涉及到的类加载器</span></div><div class="line">ClassLoader commonLoader = <span class="keyword">null</span>;</div><div class="line">ClassLoader catalinaLoader = <span class="keyword">null</span>;</div><div class="line">ClassLoader sharedLoader = <span class="keyword">null</span>;</div></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/26/Tomcat源码：Bootstrap启动流程/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/25/test/" itemprop="url">
-                  test
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-25T23:21:21+08:00" content="2016-11-25">
-              2016-11-25
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/25/test/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/25/test/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/25/test/" class="leancloud_visitors" data-flag-title="test">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>13 字</span>
-                &nbsp; | &nbsp;
-                <span>0 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          Welcome to my blog, enter password to read.
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/25/test/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/" itemprop="url">
-                  Linux配置调优：最大打开文件描述符个数
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-20T01:26:38+08:00" content="2016-11-20">
-              2016-11-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/服务器/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/20/Linux配置调优：最大打开文件描述符个数/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/20/Linux配置调优：最大打开文件描述符个数/" class="leancloud_visitors" data-flag-title="Linux配置调优：最大打开文件描述符个数">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>2,486 字</span>
-                &nbsp; | &nbsp;
-                <span>9 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>一般情况下，Linux默认的最大文件描述符数量是1024，对于一般的程序来说1024应该是足够使用的（Nginx、系统进程等）。但是像mysql、java等单进程处理大量请求的应用来说就未必了。如果单个进程打开的文件描述符数量超过了系统定义的值，就会提到“too many files open”的错误提示。</p>
-<p>如果想查看当前进程打开了多少个文件，可以执行如下命令查看：</p>
-<p><code>lsof -n | awk &#39;{print $2}&#39; | sort | uniq -c | sort -nr | more</code></p>
-<p>执行后可以看到，第一列是打开的文件描述符数量，第二列是进程id。</p>
-<h2 id="限制级别"><a href="#限制级别" class="headerlink" title="限制级别"></a>限制级别</h2><p>最大文件描述符数的限制可以分为3种：</p>
-<ul>
-<li>shell级别的限制</li>
-<li>用户级别的限制</li>
-<li>系统级别的限制</li>
-</ul>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/20/Linux配置调优：最大打开文件描述符个数/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/12/Nginx配置：虚拟主机（1）/" itemprop="url">
-                  Nginx配置：虚拟主机（1）
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-12T16:50:16+08:00" content="2016-11-12">
-              2016-11-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/服务器/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/12/Nginx配置：虚拟主机（1）/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/12/Nginx配置：虚拟主机（1）/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/12/Nginx配置：虚拟主机（1）/" class="leancloud_visitors" data-flag-title="Nginx配置：虚拟主机（1）">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>853 字</span>
-                &nbsp; | &nbsp;
-                <span>3 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="什么是虚拟主机"><a href="#什么是虚拟主机" class="headerlink" title="什么是虚拟主机"></a>什么是虚拟主机</h2><p>虚拟主机使用的是特殊的软硬件技术，它把一台运行在因特网上的服务器主机分成一台台“虚拟”的主机，每<br>台虚拟主机都可以是一个独立的网站，可以具有独立的域名，具有完整的Intemet服务器功能（WWW、FTP、Email等），同一台主机上的虚拟主机之间是完全独立的。从网站访问者来看，每一台虚拟主机和一台独立的主机完全一样。</p>
-<p>利用虚拟主机，不用为每个要运行的网站提供一台单独的Nginx服务器或单独运行一组Nginx进程。虚拟主机提供了在同一台服务器、同一组Nginx进程上运行多个网站的功能。</p>
-<p>在Nginx下，一个server标签就是一个虚拟主机，有一下3种：</p>
-<ul>
-<li>基于域名的虚拟主机，通过域名来区分虚拟主机</li>
-<li>基于端口的虚拟主机，通过端口来区分虚拟主机</li>
-<li>基于IP的虚拟主机，通过IP地址来区分虚拟主机</li>
-</ul>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/12/Nginx配置：虚拟主机（1）/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/27/解决mysql5-6占用内存过大/" itemprop="url">
-                  解决mysql5.6占用内存过大
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-27T15:16:45+08:00" content="2016-10-27">
-              2016-10-27
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/27/解决mysql5-6占用内存过大/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/27/解决mysql5-6占用内存过大/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/27/解决mysql5-6占用内存过大/" class="leancloud_visitors" data-flag-title="解决mysql5.6占用内存过大">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>4,339 字</span>
-                &nbsp; | &nbsp;
-                <span>16 min</span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>虚拟机的内存设置成了1G，跑了两个tomcat和rabbitmq以及redis,mysql启动失败。再次启动有时会成功，但过一会看进程又没有了。</p>
-<p>使用命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service mysqld restart</div></pre></td></tr></table></figure></p>
-<p>后提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ERROR! MySQL server PID file could not be found!</div><div class="line">Starting MySQL..................................... ERROR! The server quit without updating PID file (/opt/mysql/data/localhost.localdomain.pid).</div></pre></td></tr></table></figure></p>
-<p>查看mysql配置文件<code>/etc/my.cnf</code>，查看错误日志文件，是内存太小了的原因。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/10/27/解决mysql5-6占用内存过大/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/01/Tomcat-8-介绍/" itemprop="url">
-                  Tomcat 8 介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-01T21:52:06+08:00" content="2016-09-01">
-              2016-09-01
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/01/Tomcat-8-介绍/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/01/Tomcat-8-介绍/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/01/Tomcat-8-介绍/" class="leancloud_visitors" data-flag-title="Tomcat 8 介绍">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-          
-              <span class="post-letters-count">
-                &nbsp; | &nbsp;
-                <span>931 字</span>
+                <span>844 字</span>
                 &nbsp; | &nbsp;
                 <span>4 min</span>
               </span>
@@ -1452,15 +641,10 @@
 
       
         
-          <h2 id="Apache-Tomcat-版本介绍"><a href="#Apache-Tomcat-版本介绍" class="headerlink" title="Apache Tomcat 版本介绍"></a>Apache Tomcat 版本介绍</h2><p>Tomcat是一个开源的软件，其实现了Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 技术。Java Servlet, JavaServer Pages, Java Expression Language 以及 Java WebSocket 规范是在 <a href="http://www.jcp.org">Java Community Process</a> 下开发出来的。</p>
-<p>不同版本的Apache Tomcat实现了不同版本的Servlet和JSP规范。它们之间的对应关系如下：</p>
-<img src="/2016/09/01/Tomcat-8-介绍/QQ20160901-0-2x.png" alt="QQ20160901-0-2x.png" title="">
-<p>当选举一个发布版本时，如果审阅者认为次发布版本已经达到稳定水平，则会选取此版本为稳定版。新的主要版本最初的发布通常从Alpha版本开始,然后经历beta版，最后到稳定版，这通常要经历几个月的时间。不过，稳定版的条件是Java规范的实现都已经完成。也就是说，在所有其他方面被认为是稳定的，但如果规范的实现不是最终的，可能仍然被标记为Beta版。</p>
-<p><strong>Alpha</strong>  由于规范的要求和/或一些显著的bug的原因，可能含有大量的未经测试或者缺少的功能，并且预计不会在任何时间内稳定地运行。</p>
-<p><strong>Beta</strong> 可能含有一些未经测试的功能和/或一些相对较小的错误。Beta版预计不会稳定地运行。</p>
-<p><strong>Stable</strong> 可能包含少量相对较小的错误。稳定版本可以用于进行生产环境使用，预计可以长时间稳定地运行。</p>
+          <p>Dynamic MBean不需要自定义MBean接口，只需要实现DynamicMBean接口即可，Dynamic MBean没有任何明显些在代码里的属性和方法，所有的属性和方法都是通过反射结合JMX提供的辅助元数据从而动态生成。换句话说，它可以使用动态的配置来实现一个类中的哪些方法或者属性可以被注册到jmx去管理。</p>
+<p>下面实现一个具体的代码，其中主要涉及3个类，分别是Hello,HelloDynamic和HelloAgent。其中Hello是一个普通的JavaBean，可以看做实际被管理的bean；HelloDynamic是一个动态的MBean，通过它来代理Hello类型的JavaBean，对其暴露一些需要被管理的属性和方法；HelloAgent中有main方法，用于启动。这里同样使用了<code>HtmlAdaptorServer</code>来通过浏览器查看和管理MBean。</p>
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/09/01/Tomcat-8-介绍/#more" rel="contents">
+            <a class="btn" href="/2016/12/21/JMX：Dynamic-MBean/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1511,8 +695,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/08/26/Linux-Centos7设置nginx开机自启动/" itemprop="url">
-                  Linux/Centos7设置nginx开机自启动
+                <a class="post-title-link" href="/2016/12/21/JMX：Model-MBean/" itemprop="url">
+                  JMX：Model MBean
                 </a>
               
             
@@ -1525,48 +709,22 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-26T00:04:12+08:00" content="2016-08-26">
-              2016-08-26
+            <time itemprop="dateCreated" datetime="2016-12-21T23:04:45+08:00" content="2016-12-21">
+              2016-12-21
             </time>
           </span>
 
           
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/服务器/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/26/Linux-Centos7设置nginx开机自启动/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/26/Linux-Centos7设置nginx开机自启动/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
 
           
           
-             <span id="/2016/08/26/Linux-Centos7设置nginx开机自启动/" class="leancloud_visitors" data-flag-title="Linux/Centos7设置nginx开机自启动">
+             <span id="/2016/12/21/JMX：Model-MBean/" class="leancloud_visitors" data-flag-title="JMX：Model MBean">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1580,9 +738,9 @@
           
               <span class="post-letters-count">
                 &nbsp; | &nbsp;
-                <span>185 字</span>
+                <span>0 字</span>
                 &nbsp; | &nbsp;
-                <span>1 min</span>
+                <span>0 min</span>
               </span>
           
         </div>
@@ -1597,9 +755,796 @@
 
       
         
-          <h2 id="新增shell脚本-vi-etc-rc-d-init-d-nginx"><a href="#新增shell脚本-vi-etc-rc-d-init-d-nginx" class="headerlink" title="新增shell脚本 vi /etc/rc.d/init.d/nginx"></a>新增shell脚本 vi /etc/rc.d/init.d/nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#! /bin/bash</span></div><div class="line"><span class="comment"># chkconfig: 35 85 15  </span></div><div class="line"><span class="comment"># description: Nginx is an HTTP(S) server, HTTP(S) reverse</span></div><div class="line"><span class="built_in">set</span> <span class="_">-e</span></div><div class="line">PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/sbin:/bin:/usr/sbin:/usr/bin</div><div class="line">DESC=<span class="string">"nginx daemon"</span>  </div><div class="line">NAME=nginx  </div><div class="line">DAEMON=/usr/<span class="built_in">local</span>/nginx/sbin/<span class="variable">$NAME</span>  </div><div class="line">SCRIPTNAME=/etc/init.d/<span class="variable">$NAME</span>  </div><div class="line"><span class="built_in">test</span> -x <span class="variable">$DAEMON</span> || <span class="built_in">exit</span> 0  </div><div class="line"><span class="function"><span class="title">d_start</span></span>()&#123;  </div><div class="line">   <span class="variable">$DAEMON</span> || <span class="built_in">echo</span> -n <span class="string">" already running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_stop</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> quit || <span class="built_in">echo</span> -n <span class="string">" not running"</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">d_reload</span></span>() &#123;  </div><div class="line">   <span class="variable">$DAEMON</span> <span class="_">-s</span> reload || <span class="built_in">echo</span> -n <span class="string">" counld not reload"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span>  </div><div class="line">  start)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Starting <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  stop)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Stopping <span class="variable">$DESC</span>:<span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  reload)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Reloading <span class="variable">$DESC</span> configuration..."</span></div><div class="line">     d_reload</div><div class="line">     <span class="built_in">echo</span> <span class="string">"reloaded."</span></div><div class="line">  ;;</div><div class="line">  restart)  </div><div class="line">     <span class="built_in">echo</span> -n <span class="string">"Restarting <span class="variable">$DESC</span>: <span class="variable">$NAME</span>"</span></div><div class="line">     d_stop</div><div class="line">     sleep 2</div><div class="line">     d_start</div><div class="line">     <span class="built_in">echo</span> <span class="string">"."</span></div><div class="line">  ;;</div><div class="line">  *)</div><div class="line">     <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$SCRIPTNAME</span> &#123;start|stop|restart|reload&#125;"</span> &gt;&amp;2</div><div class="line">     <span class="built_in">exit</span> 3</div><div class="line">  ;;</div><div class="line"><span class="keyword">esac</span>  </div><div class="line"><span class="built_in">exit</span> 0</div></pre></td></tr></table></figure>
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/18/JMX：Notification/" itemprop="url">
+                  JMX：Notification
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-18T14:52:56+08:00" content="2016-12-18">
+              2016-12-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发手册/" itemprop="url" rel="index">
+                    <span itemprop="name">开发手册</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/18/JMX：Notification/" class="leancloud_visitors" data-flag-title="JMX：Notification">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>1,111 字</span>
+                &nbsp; | &nbsp;
+                <span>5 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="Notification介绍"><a href="#Notification介绍" class="headerlink" title="Notification介绍"></a>Notification介绍</h2><p>从前两篇文章可以知道，MBean提供的管理接口允许代理对其管理资源进行控制和配置。然而，对管理复杂的分布式系统来说，这些接口只是提供了一部分功能。一般来说，管理应用程序需要对管理的资源进行监控，以便发生一些行为或者状态变化时能够作出相应的反映。</p>
+<p>Notification起到了MBean之间的沟通桥梁的作用。JMX Notification模型和Java Event模型类似，将一些重要的信息，状态的转变，数据的变更传递给Notification Listener，以便资源的管理。</p>
+<p>JMX的Notification由四部分组成：</p>
+<ul>
+<li>Notification，一个通用的事件类型，该类标识事件的类型，可以被直接使用，也可以根据传递的事件的需要而被扩展。</li>
+<li>NotificationListener，接收通知的对象需实现此接口。</li>
+<li>NotificationFilter，作为通知过滤器的对象需实现此接口，为通知监听者提供了一个过滤通知的过滤器。</li>
+<li>NotificationBroadcaster，通知发送者需实现此接口，该接口允许希望得到通知的监听者注册。</li>
+</ul>
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/08/26/Linux-Centos7设置nginx开机自启动/#more" rel="contents">
+            <a class="btn" href="/2016/12/18/JMX：Notification/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/14/JMX：Standard-MBean/" itemprop="url">
+                  JMX：Standard MBean
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-14T21:44:20+08:00" content="2016-12-14">
+              2016-12-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发手册/" itemprop="url" rel="index">
+                    <span itemprop="name">开发手册</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/14/JMX：Standard-MBean/" class="leancloud_visitors" data-flag-title="JMX：Standard MBean">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>2,557 字</span>
+                &nbsp; | &nbsp;
+                <span>10 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Standard MBean（标准管理构件）是JMX管理构件中最简单的一种，只需要开发一个MBean接口，一个实现MBean接口的类，并且把他们注册到MBeanServer中就可以了。</p>
+<p>下面例子使用的是Java8，其中已经包含了jmx。该例中使用了<code>HtmlAdaptorServer</code>类，需要用到jmxtools.jar, 可以到 <a href="http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-java-plat-419418.html">http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-java-plat-419418.html</a> 下载，下载后的文件是jmx-1_2_1-ri.zip，解压后将jmxtools.jar导入到项目中即可。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/12/14/JMX：Standard-MBean/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/14/JMX架构简介/" itemprop="url">
+                  JMX架构简介
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-14T00:20:05+08:00" content="2016-12-14">
+              2016-12-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发手册/" itemprop="url" rel="index">
+                    <span itemprop="name">开发手册</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/14/JMX架构简介/" class="leancloud_visitors" data-flag-title="JMX架构简介">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>3,963 字</span>
+                &nbsp; | &nbsp;
+                <span>14 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="JMX简单介绍"><a href="#JMX简单介绍" class="headerlink" title="JMX简单介绍"></a>JMX简单介绍</h2><p>Java管理扩展JMX(Java Management Extensions)是一个为应用程序植入管理功能的框架。JMX是一套标准的代理和服务，实际上，用户可以在任何Java应用程序中使用这些代理和服务实现管理。<br>JMX是一种应用编程接口，可扩充对象和方法的集合体，可以用于跨越一系列不同的异构操作系统平台、系统体系结构和网络传输协议，灵活的开发无缝集成的系统、网络和服务管理应用它提供了用户界面指导、Java类和开发集成系统、网络及网络管理应用的规范。</p>
+<p>管理对象是JMX应用程序的核心。JMX结构包括：支持Java的Web浏览器用户接口，管理运行模块ARM(Admin Runtime Module)和应用。这三个部件之间通过RMI（Remote Method Invocation）进行通信。这里需要说明的是，RMI是使得一个Java虚拟机（JVM）上运行的程序可以调用远程服务器上另一个JVM总的对象。</p>
+<h2 id="Java管理扩展JMX的体系结构"><a href="#Java管理扩展JMX的体系结构" class="headerlink" title="Java管理扩展JMX的体系结构"></a>Java管理扩展JMX的体系结构</h2><p>JMX框架如下图所示：</p>
+<img src="/2016/12/14/JMX架构简介/CIlaw2Y.png" alt="CIlaw2Y.png" title="">
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/12/14/JMX架构简介/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/08/Tomcat源码：Connector/" itemprop="url">
+                  Tomcat源码：Connector
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-08T23:28:44+08:00" content="2016-12-08">
+              2016-12-08
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/08/Tomcat源码：Connector/" class="leancloud_visitors" data-flag-title="Tomcat源码：Connector">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>0 字</span>
+                &nbsp; | &nbsp;
+                <span>0 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/05/Tomcat源码：生命周期/" itemprop="url">
+                  Tomcat源码：生命周期
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-05T22:44:53+08:00" content="2016-12-05">
+              2016-12-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tomcat源码/" itemprop="url" rel="index">
+                    <span itemprop="name">Tomcat源码</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/05/Tomcat源码：生命周期/" class="leancloud_visitors" data-flag-title="Tomcat源码：生命周期">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>3,393 字</span>
+                &nbsp; | &nbsp;
+                <span>14 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>从前几篇文章可以知道，Tomcat包含很多组件，并且一个组件可以包含多个组件，当Tomcat启动时，只需要启动最上层的组件，那么包含于该组件中的其他组件也会一并启动，关闭也一样。这就是通过实现<code>org.apache.catalina.Lifecycle</code>接口来实现的单一启动/关闭的效果。</p>
+<p>Tomcat的生命周期主要涉及到4种类型：<code>Lifecycle</code>、<code>LifecycleEvent</code>、<code>LifecycleState</code>和<code>LifecycleListener</code>，Tomcat也提供了<code>LifecycleBase</code>抽象类来简化生命周期的处理，它实现了<code>Lifecycle</code>接口，并提供了钩子函数来扩展各个组件在生命周期中的处理行为。</p>
+<p>生命周期的基本类图如下：</p>
+<img src="/2016/12/05/Tomcat源码：生命周期/QQ20161206-0@2x.png" alt="QQ20161206-0@2x.png" title="">
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/12/05/Tomcat源码：生命周期/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/12/04/设计模式：观察者模式/" itemprop="url">
+                  设计模式：观察者模式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-04T14:49:58+08:00" content="2016-12-04">
+              2016-12-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/04/设计模式：观察者模式/" class="leancloud_visitors" data-flag-title="设计模式：观察者模式">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+          
+              <span class="post-letters-count">
+                &nbsp; | &nbsp;
+                <span>1,463 字</span>
+                &nbsp; | &nbsp;
+                <span>6 min</span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="观察者模式的定义"><a href="#观察者模式的定义" class="headerlink" title="观察者模式的定义"></a>观察者模式的定义</h2><p>观察者模式（Observer Pattern），也叫发布/订阅模式（Publish/Subscribe），定义如下：</p>
+<blockquote>
+<p>定义对象间一种一对多的依赖关系，使得每当一个对象改变状态，则所有依赖于它的对象都会得到通知并被自动更新。</p>
+</blockquote>
+<p>下面是观察者模式的通用类图：</p>
+<img src="/2016/12/04/设计模式：观察者模式/QQ20161204-0@2x.png" alt="QQ20161204-0@2x.png" title="">
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/12/04/设计模式：观察者模式/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1633,7 +1578,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1667,14 +1612,14 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
-               alt="Neo" />
-          <p class="site-author-name" itemprop="name">Neo</p>
+               alt="Nicky" />
+          <p class="site-author-name" itemprop="name">Nicky</p>
           <p class="site-description motion-element" itemprop="description">More Articles,More Ideas</p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1682,7 +1627,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1691,7 +1636,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1734,12 +1679,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
+  &copy;  2016 - 
   <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Neo</span>
+  <span class="author" itemprop="copyrightHolder">Nicky</span>
 </div>
 
 <div class="powered-by">
@@ -1826,32 +1771,18 @@
 
   
 
-  
-    
-  
 
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"sangjian"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
 
   
+
+
+
+
     
       
-      <script src="//cdn.bootcss.com/UAParser.js/0.7.9/ua-parser.min.js"></script>
-      <script src="/js/src/hook-duoshuo.js"></script>
     
-  
 
-
+    
 
 
 
@@ -1987,6 +1918,26 @@
   </script>
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 
@@ -2090,6 +2041,22 @@
 
 
   
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
 
 </body>
 </html>
