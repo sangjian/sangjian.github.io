@@ -80,23 +80,6 @@
             </span>
           {% endif %}
 
-          {% if post.comments %}
-            {% if (theme.duoshuo and theme.duoshuo.shortname) or theme.duoshuo_shortname %}
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="{{ post.path }}" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            {% elseif theme.disqus_shortname %}
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="{{ post.path }}" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            {% endif %}
-          {% endif %}
 
           {% if not is_index and theme.facebook_sdk.enable and theme.facebook_sdk.like_button %}
             &nbsp; | &nbsp;

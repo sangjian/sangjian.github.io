@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Be Happy</title>
+
+    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+
+    <style type="text/css">
+        .words {
+            margin-top: 40px;
+            font-size: 26px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+    </style>
+
+</head>
+
+<body>
+
+  <body>
+  <div style="text-align:center;clear:both;">
+
+</div>
+  <div class="wrapper">
+    <div class="border-circle" id="one"></div>
+    <div class="border-circle" id="two"></div>
+    <div class="background-circle">
+      <div class="triangle-light"></div>
+      <div class="body"></div>
+      <span class="shirt-text">B</span>
+      <span class="shirt-text">e</span>
+      <span class="shirt-text">&nbsp;</span>
+      <span class="shirt-text">H</span>
+      <span class="shirt-text">a</span>
+      <span class="shirt-text">p</span>
+      <span class="shirt-text">p</span>
+      <span class="shirt-text">y</span>
+      <div class="triangle-dark"></div>
+    </div>
+    <div class="head">
+      <div class="ear" id="left"></div>
+      <div class="ear" id="right"></div>
+      <div class="hair-main">
+        <div class="sideburn" id="left"></div>
+        <div class="sideburn" id="right"></div>
+        <div class="hair-top"></div>
+      </div>
+      <div class="face">
+        <div class="hair-bottom"></div>
+        <div class="nose"></div>
+        <div class="eye-shadow" id="left">
+          <div class="eyebrow"></div>
+          <div class="eye"></div>
+        </div>
+        <div class="eye-shadow" id="right">
+          <div class="eyebrow"></div>
+          <div class="eye"></div>
+        </div>
+        <div class="mouth"></div>
+        <div class="shadow-wrapper">
+          <div class="shadow"></div>
+        </div>
+      </div>
+    </div>
+    <span class="music-note" id="one">&#9835;</span>
+    <span class="music-note" id="two">&#9834;</span>
+  </div>
+
+<div class="words">
+~~听听再走~~
+</div>
+<div id="audioBox" style="display:none;"></div>
+<script type="text/javascript">
+    window.onload = function(){
+        var arr = ["music/Vexento - Seeds of Love.mp3","music/Vexento - Digital Hug.mp3","music/Vexento - Masked Raver.mp3","music/Vexento - Verve.mp3"];
+        var myAudio = new Audio();
+        myAudio.preload = true;
+        myAudio.controls = true;
+        myAudio.src = arr.pop();
+        myAudio.addEventListener('ended', playEndedHandler, false);
+        myAudio.play();
+        document.getElementById("audioBox").appendChild(myAudio);
+        myAudio.loop = false;
+        function playEndedHandler(){
+            myAudio.src = arr.pop();
+            myAudio.play();
+            console.log(arr.length);
+            !arr.length && (arr = ["music/Vexento - Seeds of Love.mp3","music/Vexento - Digital Hug.mp3","music/Vexento - Masked Raver.mp3","music/Vexento - Verve.mp3"]);
+        }
+    }
+</script>
+</body>
+
+</html>

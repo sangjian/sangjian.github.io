@@ -6,7 +6,8 @@
 favicon: /favicon.ico
 
 # Set default keywords (Use a comma to separate)
-keywords: "Hexo, NexT"
+#keywords: "Hexo, NexT"
+keywords: "Java,博客,技术,框架,源码,JDK"
 
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
@@ -14,7 +15,7 @@ keywords: "Hexo, NexT"
 rss: /atom.xml
 
 # Specify the date when the site was setup
-#since: 2015
+since: 2016
 
 
 
@@ -227,8 +228,8 @@ auto_excerpt:
 
 # MathJax Support
 mathjax:
-  enable: false
-  cdn: //cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+  enable: true
+  cdn: //cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
 
 # Swiftype Search API Key
@@ -237,11 +238,8 @@ mathjax:
 # Baidu Analytics ID
 #baidu_analytics:
 
-# Duoshuo ShortName
-#duoshuo_shortname:
-
 # Disqus
-#disqus_shortname:
+#disqus_shortname: Nick
 
 # Baidu Share
 # Available value:
@@ -254,7 +252,6 @@ mathjax:
 #add_this_id:
 
 # Share
-#duoshuo_share: true
 
 # Google Webmaster tools verification setting
 # See: https://www.google.com/webmasters/
@@ -267,15 +264,6 @@ mathjax:
 # CNZZ count
 #cnzz_siteid:
 
-
-# Make duoshuo show UA
-# user_id must NOT be null when admin_enable is true!
-# you can visit http://dev.duoshuo.com get duoshuo user id.
-duoshuo_info:
-  ua_enable: true
-  admin_enable: true
-  user_id: 6319057304863901000
-  admin_nickname: 博主
 
 
 # Facebook SDK Support.
@@ -317,7 +305,7 @@ busuanzi_count:
 # tencent_analytics:
 
 # Enable baidu push so that the blog will push the url to baidu automatically which is very helpful for SEO
-baidu_push: false
+baidu_push: true
 
 
 
@@ -383,7 +371,7 @@ images: images
 # Theme version
 version: 5.0.1
 
-duoshuo_hotartical: true
 
 # 开启字数统计
 word_count: true
+

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>For Zhiwei</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+  <style type="text/css">
+  *,
+  *:before,
+  *:before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: slategray;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #b8c0c8;
+  }
+
+  body {
+    scrollbar-face-color: slategray;
+    scrollbar-track-color: #b8c0c8;
+  }
+
+  body {
+    height: 100vh;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    background: linear-gradient(to bottom, #ece4d9 0%,#e9dfd1 100%);
+  }
+
+  .container {
+    width: 600px;
+    height: 600px;
+    top: 3%;
+    right: auto;
+    bottom: auto;
+    left: 40%;
+    position: absolute;
+  }
+  @media screen and (max-width: 599px) {
+    .container {
+      width: 300px;
+      height: 300px;
+    }
+  }
+
+  .red {
+    width: 91%;
+    height: 91%;
+    top: 0%;
+    right: 5.5%;
+    bottom: 0%;
+    left: 5.5%;
+    position: absolute;
+    margin: auto;
+  }
+
+  .head {
+    width: 83%;
+    height: 77%;
+    border-radius: 50%;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    top: 15%;
+    right: 0;
+    bottom: 0;
+    left: 12%;
+    position: absolute;
+    border: 10px solid #000;
+    background-color: #D6002D;
+
+    box-shadow: inset -18px 8px 15px -5px rgba(237, 178, 144, 0.5);
+    overflow: hidden;
+    z-index: 10;
+  }
+  .head:before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    box-shadow: inset 10px -10px 3px 2px rgba(0, 0, 0, 0.2);
+    border-radius: inherit;
+  }
+  .head:after {
+    content: "";
+    top: 65%;
+    right: 0;
+    bottom: 0;
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: #E2C4A8;
+  }
+  .head .peak {
+    top: 58%;
+    right: 0;
+    bottom: 0;
+    left: 38%;
+    position: absolute;
+    width: 26%;
+    height: 28%;
+    background-color: #FBBA1E;
+    z-index: 60;
+    border: 1px solid #000000;
+    border-radius: 10% 5% 10% 5%;
+    -webkit-transform: rotate(45deg) skew(0deg, 0deg);
+            transform: rotate(45deg) skew(0deg, 0deg);
+    box-shadow: 0px 0px 0px 6px black, inset 0 5px 6px 0 rgba(255, 255, 255, 0.3), inset 2px -4px 10px 0px rgba(0, 0, 0, 0.4);
+  }
+  .head .peak:before {
+    content: "";
+    top: -30%;
+    right: 0;
+    bottom: 0;
+    left: 14%;
+    position: absolute;
+    width: 48%;
+    height: 150%;
+    border-radius: 50% 50% 50% 0%;
+    border: 5px solid #000000;
+    border-color: transparent #000000 transparent transparent;
+    -webkit-transform: rotate(42deg);
+            transform: rotate(42deg);
+  }
+
+  .eye-left, .eye-right {
+    width: 21%;
+    height: 21%;
+    top: 40%;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    position: absolute;
+    background-color: #fff;
+    border-radius: 50%;
+  }
+
+  .eye-left {
+    position: absolute;
+    left: 29%;
+    box-shadow: 8px -9px 10px 0 rgba(0, 0, 0, 0.3) inset, -8px 3px 0 0 black, -5px 8px 0 0 black, 5px 4px 0 0 black, -8px 3px 0 0 black inset, -9px 5px 5px rgba(0, 0, 0, 0.1), -10px 6px 5px rgba(0, 0, 0, 0.1), -11px 7px 5px rgba(0, 0, 0, 0.1), -12px 8px 5px rgba(0, 0, 0, 0.1), -13px 9px 5px rgba(0, 0, 0, 0.1), -14px 9px 5px rgba(0, 0, 0, 0.1), -15px 10px 5px rgba(0, 0, 0, 0.1), -16px 11px 5px rgba(0, 0, 0, 0.1), -17px 12px 5px rgba(0, 0, 0, 0.1), -18px 13px 5px rgba(0, 0, 0, 0.1), -19px 14px 5px rgba(0, 0, 0, 0.1), -20px 15px 5px rgba(0, 0, 0, 0.1);
+  }
+  .eye-left--pupil {
+    right: 15%;
+    width: 35%;
+    height: 35%;
+    top: 35%;
+  }
+  .eye-left .eyebrow {
+    -webkit-transform: skewY(20deg);
+            transform: skewY(20deg);
+    left: -28%;
+    top: -18%;
+  }
+
+  .eye-right {
+    position: absolute;
+    right: 29%;
+    box-shadow: -8px -9px 10px 0 rgba(0, 0, 0, 0.3) inset, 8px 3px 0 0 black, 5px 8px 0 0 black, 8px 3px 0 0 black inset, 9px 5px 5px rgba(0, 0, 0, 0.1), 10px 6px 5px rgba(0, 0, 0, 0.1), 11px 7px 5px rgba(0, 0, 0, 0.1), 12px 8px 5px rgba(0, 0, 0, 0.1), 13px 9px 5px rgba(0, 0, 0, 0.1), 14px 9px 5px rgba(0, 0, 0, 0.1), 15px 10px 5px rgba(0, 0, 0, 0.1), 16px 11px 5px rgba(0, 0, 0, 0.1), 17px 12px 5px rgba(0, 0, 0, 0.1), 18px 13px 5px rgba(0, 0, 0, 0.1), 19px 14px 5px rgba(0, 0, 0, 0.1), 20px 15px 5px rgba(0, 0, 0, 0.1);
+  }
+  .eye-right--pupil {
+    width: 30%;
+    height: 30%;
+    top: 38%;
+    left: 20%;
+  }
+  .eye-right .eyebrow {
+    -webkit-transform: skewY(-20deg);
+            transform: skewY(-20deg);
+    top: -18%;
+  }
+
+  .eye-left--pupil, .eye-right--pupil {
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  .eye-left .eyebrow, .eye-right .eyebrow {
+    width: 130%;
+    height: 45%;
+    background-color: #000;
+    position: absolute;
+  }
+
+  .hair {
+    width: 13%;
+    height: 35%;
+    top: -5%;
+    right: 38%;
+    bottom: auto;
+    left: auto;
+    position: absolute;
+    background-color: #D6002D;
+    border-radius: 50% 50% 50% 50%/40% 40% 60% 60%;
+    -webkit-transform: rotate(-50deg);
+            transform: rotate(-50deg);
+    border: 10px solid black;
+    border-bottom-color: transparent;
+    z-index: 10;
+  }
+  .hair:before {
+    content: "";
+    width: 130%;
+    height: 100%;
+    background-color: #D6002D;
+    position: absolute;
+    left: -140%;
+    bottom: 25%;
+    border-radius: 50% 50% 50% 50%/40% 40% 60% 60%;
+    border: 10px solid black;
+    border-bottom-color: transparent;
+    -webkit-transform: rotate(-30deg);
+            transform: rotate(-30deg);
+    z-index: -1;
+  }
+  @media screen and (max-width: 599px) {
+    .hair:before {
+      border: 7px solid black;
+      -webkit-transform: rotate(-23deg);
+              transform: rotate(-23deg);
+    }
+  }
+
+  .freckles {
+    width: 5%;
+    height: 10%;
+    position: absolute;
+    top: 65%;
+    left: 1%;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+    -webkit-transform: rotate(-10deg);
+            transform: rotate(-10deg);
+  }
+
+  .freckles-2 {
+      width: 10%;
+      height: 18%;
+      position: absolute;
+      top: 58%;
+      left: 12%;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.2);
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+  }
+
+  .freckles-3 {
+      width: 10%;
+      height: 18%;
+      position: absolute;
+      top: 58%;
+      left: 78%;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.2);
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+  }
+
+  .freckles-4 {
+      width: 5%;
+      height: 10%;
+      position: absolute;
+      top: 65%;
+      left: 94%;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.2);
+      -webkit-transform: rotate(15deg);
+      transform: rotate(15deg);
+  }
+
+  .milky {
+    font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+    text-transform: uppercase;
+    display: block;
+    font-size: 50px;
+    color: #f1ebe5;
+    text-shadow: 0 8px 9px #c4b59d, 0px -2px 1px #fff;
+    font-weight: bold;
+    letter-spacing: -4px;
+    text-align: center;
+
+    position: absolute;
+    padding: 100px 200px;
+    top: 40%;
+    left: 25%;
+    transform: translate(-50%,-50%);
+    border-radius: 20px;
+  }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="red">
+    <div class="hair"></div>
+    <div class="head">
+      <div class="eye-left">
+        <div class="eye-left--pupil"></div>
+        <div class="eyebrow"></div>
+      </div>
+      <div class="eye-right">
+        <div class="eye-right--pupil"></div>
+        <div class="eyebrow"></div>
+      </div>
+      <div class="peak"></div>
+      <div class="freckles"></div>
+      <div class="freckles-2"></div>
+      <div class="freckles-3"></div>
+      <div class="freckles-4"></div>
+    </div>
+
+  </div>
+
+
+</div>
+<div class="milky">Hi：芷薇同学<br />心情不好？<br /><a href="happy" target="_blank" style="color:#FCF4D9">戳这看看</a><br /><br />想发泄一下？<br /><a href="drag" target="_blank" style="color:#FCF4D9">请猛戳这里！</a><br /><br /><a href="words" target="_blank" style="color:#FCF4D9">Some Words ...</a></div>
+
+</body>
+</html>
